@@ -1,0 +1,120 @@
+<style>
+  .cf-charity-num{display:flex;align-items:center;justify-content:center}
+  .cf-charity-mark{width:clamp(130px,24vw,200px);height:auto;display:block}
+</style>
+<div class="page-top">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">Cat Fam</span></nav>
+
+  <!-- HERO -->
+  <div class="cf-hero">
+    <div class="cf-hero-eyebrow">
+      <span class="cf-hero-dot"></span>
+      Cat Fam Initiative
+      <span class="cf-hero-dot"></span>
+    </div>
+    <h1 class="cf-hero-h">We love cats.<br>We know you do too.</h1>
+    <p class="cf-hero-sub">Cat-themed glass with real personality — and a portion of every Cat Collection purchase is donated to California cat rescue.</p>
+    <a href="/collections/cat-collection" class="cf-hero-btn">Shop the Cat Collection</a>
+    <div class="cf-hero-stat">
+      <span>A portion of every purchase donated</span>
+      <span class="cf-hero-sep">·</span>
+      <span>Supports California cat rescue</span>
+      <span class="cf-hero-sep">·</span>
+      <span>Every purchase counts</span>
+    </div>
+  </div>
+
+  <!-- PHOTO GRID -->
+  <div class="cf-photos">
+    <div class="cf-photo-slot">
+      <img src="{{ 'IMG_5500.jpg' | asset_url }}" alt="Cat" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="cf-photo-slot">
+      <img src="{{ 'IMG_7701.jpg' | asset_url }}" alt="Cat" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="cf-photo-slot">
+      <img src="{{ 'IMG_1833.jpg' | asset_url }}" alt="Cat" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="cf-photo-slot">
+      <img src="{{ 'IMG_2839.jpg' | asset_url }}" alt="Cat" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="cf-photo-slot">
+      <img src="{{ 'IMG_1176.jpg' | asset_url }}" alt="Cat" style="width:100%;height:100%;object-fit:cover">
+    </div>
+    <div class="cf-photo-slot cf-submit-slot" onclick="openCatSubmit()" style="cursor:pointer;background:var(--f1);border:2px dashed rgba(36,80,52,.25);">
+      <span style="font-size:32px">📷</span>
+      <div class="cf-photo-slot-label" style="color:var(--gdk);font-weight:700;font-size:14px">Submit your cat →</div>
+    </div>
+  </div>
+
+  <!-- SUBMIT POPUP -->
+  <div id="cat-submit-overlay" onclick="closeCatSubmit()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:900;align-items:center;justify-content:center;">
+    <div onclick="event.stopPropagation()" style="background:#fff;border-radius:16px;padding:44px 40px;max-width:420px;width:90%;text-align:center;position:relative;">
+      <button onclick="closeCatSubmit()" style="position:absolute;top:16px;right:18px;border:none;background:none;font-size:22px;color:#999;cursor:pointer;">✕</button>
+      <div style="font-size:40px;margin-bottom:12px">🐾</div>
+      <h2 style="font-size:22px;font-weight:800;color:#0d0d0d;margin-bottom:10px;letter-spacing:-.02em">Submit Your Cat</h2>
+      <p style="font-size:15px;color:#555550;line-height:1.7;margin-bottom:28px">Want your cat featured on the FLOW3R Cat Fam wall? Send us a photo — we pick our favorites each month.</p>
+      <a href="https://instagram.com/flow3r.glass" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#245034;color:#fff;border-radius:10px;padding:14px 20px;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:10px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="4.5" stroke="#fff" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg>
+        DM us on Instagram
+      </a>
+      <a href="mailto:support@flow3r.shop?subject=Cat Fam Submission" style="display:flex;align-items:center;justify-content:center;gap:10px;background:transparent;color:#245034;border:1.5px solid #245034;border-radius:10px;padding:13px 20px;font-size:15px;font-weight:700;text-decoration:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="3" stroke="#245034" stroke-width="1.8"/><path d="M2 7l10 7 10-7" stroke="#245034" stroke-width="1.8"/></svg>
+        Email us a photo
+      </a>
+      <p style="font-size:12px;color:#888;margin-top:18px">@flow3r.glass · support@flow3r.shop</p>
+    </div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <section class="cf-products">
+    <div class="cf-section-head">
+      <div class="cf-section-eyebrow">The Cat Collection</div>
+      <h2 class="cf-section-h">Pieces with personality.</h2>
+      <p class="cf-section-sub">Premium borosilicate glass — same quality as everything we carry, with cat-themed details that actually look good.</p>
+    </div>
+    {%- assign cat_col = collections['cat-collection'] -%}
+    {%- if cat_col != blank and cat_col.products.size > 0 -%}
+      <div class="prod-grid">
+        {%- for product in cat_col.products -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div style="background:var(--f1);border-radius:var(--r2);padding:64px;text-align:center;border:1.5px dashed rgba(36,80,52,.2)">
+        <div style="font-size:40px;margin-bottom:12px">🐾</div>
+        <p style="font-size:16px;color:var(--gt);font-weight:600">Cat Collection coming soon.</p>
+        <p style="font-size:14px;color:var(--g3);margin-top:6px">Add products tagged "cat-collection" in your Shopify admin.</p>
+      </div>
+    {%- endif -%}
+  </section>
+
+  <!-- CHARITY -->
+  <div class="cf-charity">
+    <div class="cf-charity-inner">
+      <div class="cf-charity-num"><img src="{{ 'Cat_Fam_White.svg' | asset_url }}" alt="Cat Fam" class="cf-charity-mark"></div>
+      <div>
+        <h2 class="cf-charity-h">Every Cat Collection purchase supports California cat rescue.</h2>
+        <p class="cf-charity-p">A portion of every Cat Collection purchase is donated to local California cat rescue. You buy a cat piece — real cats get help finding homes. That's it.</p>
+        <a href="/collections/cat-collection" class="cf-hero-btn">Shop Cat Collection →</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openCatSubmit() {
+      const el = document.getElementById('cat-submit-overlay');
+      el.style.display = 'flex';
+      document.body.classList.add('lock');
+    }
+    function closeCatSubmit() {
+      const el = document.getElementById('cat-submit-overlay');
+      el.style.display = 'none';
+      document.body.classList.remove('lock');
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeCatSubmit();
+    });
+  </script>
+
+</div>

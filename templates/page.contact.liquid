@@ -1,0 +1,140 @@
+{%- comment -%}
+  templates/page.contact.liquid
+  FLOW3R — Contact / Intake page
+  ──────────────────────────────────────────────────────────────
+  The "Contact" page (handle: contact, template suffix: contact)
+  already exists in Shopify Admin. This file is the missing template
+  it points at — paste it in and /pages/contact renders. No admin step.
+
+  Form: Shopify native {% form 'contact' %}. Submissions route to the
+  store customer-service inbox (support@flow3r.shop). No app, no cost.
+{%- endcomment -%}
+
+<link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@300,400,500,600,700&display=swap" rel="stylesheet">
+
+<style>
+.contact-pg *,.contact-pg *::before,.contact-pg *::after{box-sizing:border-box;margin:0;padding:0}
+.contact-pg{font-family:'Neue Montreal',system-ui,sans-serif;color:#0d0d0d;background:#fff;padding-top:var(--top,120px)}
+.ct-wrap{max-width:1080px;margin:0 auto;padding:44px 24px 96px}
+.ct-head{max-width:560px;margin-bottom:40px}
+.ct-eyebrow{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#245034;margin-bottom:14px}
+.ct-h1{font-size:clamp(34px,5.4vw,56px);font-weight:300;letter-spacing:-.025em;line-height:1.02;color:#0d0d0d;margin-bottom:14px}
+.ct-h1 strong{font-weight:600}
+.ct-sub{font-size:15px;color:#555550;line-height:1.65}
+.ct-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.ct-card{border:1.5px solid rgba(0,0,0,.1);border-radius:6px;padding:30px 26px}
+.ct-form{display:flex;flex-direction:column;gap:16px}
+.ct-row{display:grid;grid-template-columns:1fr;gap:16px}
+.ct-field{display:flex;flex-direction:column;gap:7px}
+.ct-field label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#555550}
+.ct-opt{color:#aaa;font-weight:500;letter-spacing:0;text-transform:none}
+.ct-field input,.ct-field textarea{font-family:inherit;font-size:14px;color:#0d0d0d;background:#fff;border:1.5px solid rgba(0,0,0,.16);border-radius:4px;padding:12px 14px;width:100%;transition:border-color .15s}
+.ct-field input::placeholder,.ct-field textarea::placeholder{color:#b3b3b0}
+.ct-field input:focus,.ct-field textarea:focus{outline:none;border-color:#245034}
+.ct-field textarea{resize:vertical;min-height:140px;line-height:1.6}
+.ct-btn{align-self:flex-start;background:#245034;color:#fff;border:none;border-radius:4px;font-family:inherit;font-size:14px;font-weight:600;letter-spacing:.05em;padding:15px 30px;cursor:pointer;transition:background .2s,transform .15s}
+.ct-btn:hover{background:#1a3d26;transform:translateY(-1px)}
+.ct-success{border:1.5px solid rgba(36,80,52,.3);background:#e8f5ed;border-radius:6px;padding:28px 26px}
+.ct-success-h{font-size:18px;font-weight:600;color:#245034;margin-bottom:8px}
+.ct-success-p{font-size:14px;color:#3c5a44;line-height:1.6}
+.ct-errors{background:#fcebea;border:1px solid rgba(190,60,55,.32);border-radius:4px;padding:13px 16px;margin-bottom:4px}
+.ct-errors ul{margin:0;padding-left:18px}
+.ct-errors li{font-size:13px;color:#b23b3b;line-height:1.5}
+.ct-info{background:#245034;border-radius:6px;padding:30px 28px;color:#fff;display:flex;flex-direction:column;gap:22px}
+.ct-info-block{display:flex;flex-direction:column;gap:6px}
+.ct-info-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.ct-info-link{font-size:15px;font-weight:500;color:#fff;text-decoration:none;width:fit-content;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:2px;transition:border-color .15s}
+.ct-info-link:hover{border-color:#fff}
+.ct-info-text{font-size:14px;color:rgba(255,255,255,.78);line-height:1.6}
+.ct-info-socials{display:flex;flex-direction:column;gap:8px}
+.ct-info-socials a{font-size:14px;color:rgba(255,255,255,.78);text-decoration:none;width:fit-content;transition:color .15s}
+.ct-info-socials a:hover{color:#fff}
+@media(min-width:820px){
+  .ct-wrap{padding:64px 32px 112px}
+  .ct-head{margin-bottom:48px}
+  .ct-grid{grid-template-columns:1.55fr 1fr;gap:28px;align-items:start}
+  .ct-card{padding:38px 36px}
+  .ct-row{grid-template-columns:1fr 1fr}
+  .ct-info{padding:36px 32px}
+}
+</style>
+
+<div class="contact-pg">
+  <div class="ct-wrap">
+    <nav class="breadcrumb ct-breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">Contact</span></nav>
+    <header class="ct-head">
+      <div class="ct-eyebrow">Support</div>
+      <h1 class="ct-h1">Get in <strong>touch.</strong></h1>
+      <p class="ct-sub">A question about a piece, an order, a return, or wholesale — send it here. Our California-based team answers every message personally, usually within 24 hours.</p>
+    </header>
+
+    <div class="ct-grid">
+
+      <div class="ct-card">
+        {%- form 'contact', id: 'contactPageForm' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="ct-success" id="ctSuccess">
+              <div class="ct-success-h">Message sent.</div>
+              <p class="ct-success-p">Thanks for reaching out — we'll get back to you within 24 hours, usually sooner. Check your inbox (and your spam folder, just in case).</p>
+            </div>
+            <script>
+              document.addEventListener('DOMContentLoaded',function(){
+                var s=document.getElementById('ctSuccess');
+                if(s){s.scrollIntoView({behavior:'smooth',block:'center'});}
+              });
+            </script>
+          {%- else -%}
+            {%- if form.errors -%}
+              <div class="ct-errors">{{ form.errors | default_errors }}</div>
+            {%- endif -%}
+            <input type="hidden" name="contact[subject]" value="Contact form — flow3r.shop">
+            <div class="ct-form">
+              <div class="ct-row">
+                <div class="ct-field">
+                  <label for="ctName">Name</label>
+                  <input type="text" id="ctName" name="contact[name]" autocomplete="name" required>
+                </div>
+                <div class="ct-field">
+                  <label for="ctEmail">Email</label>
+                  <input type="email" id="ctEmail" name="contact[email]" autocomplete="email" required>
+                </div>
+              </div>
+              <div class="ct-field">
+                <label for="ctOrder">Order number <span class="ct-opt">— optional, helps with returns &amp; warranty</span></label>
+                <input type="text" id="ctOrder" name="contact[Order number]" placeholder="#1234">
+              </div>
+              <div class="ct-field">
+                <label for="ctBody">Message</label>
+                <textarea id="ctBody" name="contact[body]" placeholder="What can we help with?" required></textarea>
+              </div>
+              <button type="submit" class="ct-btn">Send Message</button>
+            </div>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <aside class="ct-info">
+        <div class="ct-info-block">
+          <div class="ct-info-label">Email</div>
+          <a href="mailto:support@flow3r.shop" class="ct-info-link">support@flow3r.shop</a>
+        </div>
+        <div class="ct-info-block">
+          <div class="ct-info-label">Response time</div>
+          <div class="ct-info-text">Within 24 hours, usually faster. Monday&ndash;Friday, California time.</div>
+        </div>
+        <div class="ct-info-block">
+          <div class="ct-info-label">Returns &amp; warranty</div>
+          <div class="ct-info-text">Add your order number so we can sort it in one reply instead of a back-and-forth.</div>
+        </div>
+        <div class="ct-info-block">
+          <div class="ct-info-label">Find us</div>
+          <div class="ct-info-socials">
+            <a href="https://instagram.com/flow3r.glass" target="_blank" rel="noopener">Instagram &#8599;</a>
+            <a href="https://tiktok.com/@flow3r.shop" target="_blank" rel="noopener">TikTok &#8599;</a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</div>

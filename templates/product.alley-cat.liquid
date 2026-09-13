@@ -1,0 +1,700 @@
+{%- comment -%}
+  ══════════════════════════════════════════════════════════════
+  product.alley-cat.liquid  —  v2
+  Flow3r — Alley Cat Collection · Individual Product Page
+  ──────────────────────────────────────────────────────────────
+  ASSIGN TO (Shopify Admin → Products → Theme template):
+    · Alley Cats Bong       → alley-cat
+    · Alley Cats XL Bong    → alley-cat
+    · Alley Cats Hand Pipe  → alley-cat
+
+  LIFESTYLE IMAGES:
+    Search "REPLACE —" in this file. Each slot has a commented
+    <img> tag. Uncomment, paste CDN URL into src, remove the
+    .ac-ls-ph div, and save.
+
+  RETURN POLICY:
+    Search "RETURN_POLICY" to find the foldable bar copy.
+    Update before going live.
+  ══════════════════════════════════════════════════════════════
+{%- endcomment -%}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {%- if product.description != blank -%}{{ product.description | strip_html | json }}{%- else -%}"Cat-themed borosilicate glass piece from the Alley Cats by Hemper collection. 1-year guarantee, discreet plain packaging."{%- endif -%},
+  "image": [
+    {%- for image in product.images -%}
+    "{{ image | image_url: width: 1200 }}"{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "Alley Cats by Hemper"
+  },
+  "offers": [
+    {%- for variant in product.variants -%}
+    {
+      "@type": "Offer",
+      "url": "{{ shop.url }}{{ product.url }}?variant={{ variant.id }}",
+      "price": "{{ variant.price | divided_by: 100.0 }}",
+      "priceCurrency": "{{ shop.currency }}",
+      "availability": "{% if variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+      "itemCondition": "https://schema.org/NewCondition"
+    }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+<link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@300,400,500,600,700&display=swap" rel="stylesheet">
+
+<style>
+/* ── RESET / SCOPE ─────────────────────────────────────────── */
+.ac-page *, .ac-page *::before, .ac-page *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.ac-page {
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  color: #0d0d0d; background: #fff;
+  --green:  #245034;
+  --mint:   #e8f5ed;
+  --text:   #0d0d0d;
+  --muted:  #555550;
+  --bg:     #ffffff;
+  --bg2:    #f6f5f2;
+  --border: #e8e6e1;
+  --r:      4px;
+}
+.ac-page { padding-top: var(--top, 120px); }
+.ac-layout { padding-top: 0; }
+@media (min-width: 769px) {
+  .ac-images { padding-top: 0; }
+}
+
+/* ── STICKY BAR ────────────────────────────────────────────── */
+.ac-sticky {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: #0d0d0d; color: #fff;
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 -4px 24px rgba(0,0,0,.2);
+}
+.ac-sticky.visible { transform: translateY(0); }
+.ac-sticky-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ac-sticky-name  { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ac-sticky-price { font-size: 12px; color: #999; }
+.ac-sticky-btn {
+  background: var(--green); color: #fff; border: none; border-radius: var(--r);
+  font-family: inherit; font-size: 13px; font-weight: 600; letter-spacing: .06em;
+  padding: 11px 22px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  transition: background .2s;
+}
+.ac-sticky-btn:hover { background: #1a3d26; }
+.ac-sticky-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── LAYOUT ────────────────────────────────────────────────── */
+.ac-layout { display: grid; grid-template-columns: 1fr; }
+
+/* ── IMAGE CAROUSEL ────────────────────────────────────────── */
+.ac-images { position: relative; background: #fff; overflow: hidden; }
+.ac-track-wrap { overflow: hidden; }
+.ac-track { display: flex; transition: transform .42s cubic-bezier(.16,1,.3,1); }
+.ac-slide { flex: 0 0 100%; aspect-ratio: 1/1; background: #fff; }
+.ac-slide img { width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; background: #fff; }
+.ac-slide-ph { width: 100%; height: 100%; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 10px; font-family: inherit; letter-spacing: .15em; text-transform: uppercase; color: #444; }
+.ac-dots { display: flex; justify-content: center; gap: 7px; padding: 12px 20px 8px; background: #fff; }
+.ac-dot { width: 6px; height: 6px; border-radius: 50%; background: #ccc; border: none; cursor: pointer; padding: 0; transition: background .2s, transform .2s; }
+.ac-dot.active { background: var(--green); transform: scale(1.35); }
+.ac-nav-btn {
+  display: none; position: absolute; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,.9); border: 1px solid var(--border);
+  align-items: center; justify-content: center;
+  font-size: 17px; cursor: pointer; z-index: 10;
+  transition: background .15s; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.ac-nav-btn:hover { background: #fff; }
+.ac-nav-prev { left: 12px; }
+.ac-nav-next { right: 12px; }
+
+/* ── THUMBNAIL STRIP — mobile: hidden, desktop: vertical left col ── */
+.ac-thumbs {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 8px;
+  background: #fff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.ac-thumbs::-webkit-scrollbar { display: none; }
+.ac-thumb {
+  width: 60px; height: 60px; flex-shrink: 0;
+  border-radius: 4px; overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer; background: #fff;
+  transition: border-color .18s, opacity .18s;
+  opacity: .5;
+}
+.ac-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ac-thumb.active { border-color: var(--green); opacity: 1; }
+.ac-thumb:hover { opacity: .82; }
+
+/* ── INFO PANEL ────────────────────────────────────────────── */
+.ac-info { padding: 32px 24px 56px; }
+.ac-type { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--green); margin-bottom: 10px; }
+.ac-title { font-size: clamp(26px,7vw,44px); font-weight: 300; letter-spacing: -.025em; line-height: 1.05; margin-bottom: 6px; }
+.ac-byline { font-size: 12px; color: var(--muted); margin-bottom: 22px; letter-spacing: .02em; }
+.ac-price { font-size: 28px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 20px; }
+.ac-desc { font-size: 14px; line-height: 1.78; color: var(--muted); margin-bottom: 28px; max-width: 520px; }
+.ac-divider { border: none; border-top: 1px solid var(--border); margin-bottom: 26px; }
+
+/* ── SWATCH DISPLAY ────────────────────────────────────────── */
+.ac-swatch-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.ac-swatch-row { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.ac-swatch-circle { width: 30px; height: 30px; border-radius: 50%; background: #b0b0b0; outline: 2px solid var(--green); outline-offset: 3px; flex-shrink: 0; }
+.ac-swatch-name { font-size: 13px; font-weight: 500; color: var(--text); }
+
+/* ── QTY + ATC ─────────────────────────────────────────────── */
+.ac-qty-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.ac-qty-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+.ac-qty-wrap { display: flex; align-items: center; border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; }
+.ac-qty-btn { width: 38px; height: 38px; border: none; background: transparent; font-size: 18px; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; transition: background .15s; }
+.ac-qty-btn:hover { background: var(--bg2); }
+.ac-qty-input { width: 48px; height: 38px; border: none; border-left: 1.5px solid var(--border); border-right: 1.5px solid var(--border); text-align: center; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text); background: transparent; -moz-appearance: textfield; }
+.ac-qty-input::-webkit-inner-spin-button, .ac-qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.ac-atc-btn { width: 100%; background: var(--green); color: #fff; border: none; border-radius: var(--r); font-family: inherit; font-size: 15px; font-weight: 600; letter-spacing: .06em; padding: 16px; cursor: pointer; margin-bottom: 12px; transition: background .2s, transform .15s; }
+.ac-atc-btn:hover { background: #1a3d26; transform: translateY(-1px); }
+.ac-atc-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.ac-collection-link { display: block; text-align: center; font-size: 13px; font-weight: 600; color: var(--green); text-decoration: none; padding: 13px; border: 1.5px solid rgba(36,80,52,.22); border-radius: var(--r); margin-bottom: 22px; transition: border-color .2s, background .2s; }
+.ac-collection-link:hover { border-color: var(--green); background: var(--mint); }
+
+/* Trust strip */
+.ac-trust-strip { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
+.ac-trust-item { font-size: 12px; color: var(--muted); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+.ac-trust-item::before { content: '✦'; color: var(--green); font-size: 9px; margin-top: 3px; flex-shrink: 0; }
+
+/* ── RETURN POLICY ACCORDION ───────────────────────────────── */
+.ac-return { margin-top: 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.ac-return-toggle { width: 100%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; font-family: inherit; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); transition: background .15s; }
+.ac-return-toggle:hover { background: var(--bg2); }
+.ac-return-icon { font-size: 14px; transition: transform .25s; flex-shrink: 0; }
+.ac-return-icon.open { transform: rotate(45deg); }
+.ac-return-body { max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s ease; font-size: 13px; color: var(--muted); line-height: 1.7; padding: 0 16px; }
+.ac-return-body.open { max-height: 220px; padding: 0 16px 16px; }
+
+/* ── LIFESTYLE IMAGES ──────────────────────────────────────── */
+.ac-lifestyle { background: #fff; }
+.ac-lifestyle-grid { display: grid; grid-template-columns: 1fr; gap: 2px; }
+.ac-ls-slot { aspect-ratio: 4/5; background: #1a1a1a; position: relative; overflow: hidden; }
+.ac-ls-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ac-ls-ph { width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 16px; }
+.ac-ls-ph-label { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: #444; }
+
+/* ── SPECS ─────────────────────────────────────────────────── */
+.ac-specs { padding: 56px 24px; background: var(--bg2); }
+.ac-specs-h { font-size: clamp(22px,4vw,34px); font-weight: 300; letter-spacing: -.02em; margin-bottom: 32px; }
+.ac-specs-h em { font-weight: 600; font-style: normal; }
+.ac-spec-row { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+.ac-spec-row:first-of-type { border-top: 1px solid var(--border); }
+.ac-spec-key { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+.ac-spec-val { font-size: 14px; font-weight: 500; color: var(--text); text-align: right; }
+
+/* ── FAQ ───────────────────────────────────────────────────── */
+.ac-faq { padding: 56px 24px; background: #fff; }
+.ac-faq-h { font-size: clamp(22px,4vw,32px); font-weight: 300; letter-spacing: -.02em; margin-bottom: 32px; }
+.ac-faq-h em { font-weight: 600; font-style: normal; }
+.ac-faq-item { border-bottom: 1px solid var(--border); }
+.ac-faq-item:first-of-type { border-top: 1px solid var(--border); }
+.ac-faq-q { width: 100%; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 18px 0; gap: 16px; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text); text-align: left; transition: color .2s; }
+.ac-faq-q:hover { color: var(--green); }
+.ac-faq-icon { font-size: 18px; flex-shrink: 0; color: var(--green); transition: transform .25s; }
+.ac-faq-icon.open { transform: rotate(45deg); }
+.ac-faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s ease; font-size: 13px; color: var(--muted); line-height: 1.75; padding: 0; }
+.ac-faq-a.open { max-height: 300px; padding: 0 0 18px; }
+
+/* ── CONTACT FORM ──────────────────────────────────────────── */
+.ac-contact { padding: 56px 24px; background: var(--bg2); text-align: center; }
+.ac-contact-h { font-size: clamp(20px,4vw,30px); font-weight: 300; letter-spacing: -.02em; margin-bottom: 6px; }
+.ac-contact-h em { font-weight: 600; font-style: normal; }
+.ac-contact-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+.ac-form { display: flex; flex-direction: column; gap: 14px; max-width: 560px; margin: 0 auto; text-align: left; }
+.ac-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ac-field { display: flex; flex-direction: column; gap: 6px; }
+.ac-field label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ac-field input, .ac-field textarea { border: 1.5px solid var(--border); border-radius: 6px; padding: 12px 14px; font-family: inherit; font-size: 14px; color: var(--text); background: #fff; transition: border-color .2s; width: 100%; }
+.ac-field input:focus, .ac-field textarea:focus { outline: none; border-color: var(--green); }
+.ac-field textarea { resize: vertical; min-height: 100px; }
+.ac-form-btn { background: var(--green); color: #fff; border: none; border-radius: var(--r); font-family: inherit; font-size: 14px; font-weight: 600; letter-spacing: .06em; padding: 15px 32px; cursor: pointer; align-self: flex-start; transition: background .2s, transform .15s; }
+.ac-form-btn:hover { background: #1a3d26; transform: translateY(-1px); }
+.ac-form-success { display: none; font-size: 14px; color: var(--green); font-weight: 500; padding: 14px 0; }
+.ac-form-success.show { display: block; }
+
+/* ── REST OF COLLECTION ────────────────────────────────────── */
+.ac-rest { padding: 56px 24px; background: #fff; }
+.ac-rest-h { font-size: clamp(20px,4vw,30px); font-weight: 300; letter-spacing: -.02em; margin-bottom: 32px; }
+.ac-rest-h em { font-weight: 600; font-style: normal; }
+.ac-rest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ac-rest-card { display: flex; flex-direction: column; text-decoration: none; color: var(--text); border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; transition: transform .2s, border-color .2s; }
+.ac-rest-card:hover { transform: translateY(-3px); border-color: var(--green); }
+.ac-rest-img { aspect-ratio: 1/1; background: #fff; overflow: hidden; }
+.ac-rest-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ac-rest-body { padding: 12px 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.ac-rest-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+.ac-rest-price { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.ac-rest-btn { display: block; text-align: center; background: var(--green); color: #fff; font-family: 'Neue Montreal', system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 9px; border-radius: 4px; transition: background .2s; }
+.ac-rest-card:hover .ac-rest-btn { background: #1a3d26; }
+.ac-rest-all { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; border: 1.5px solid rgba(36,80,52,.2); border-radius: 8px; text-decoration: none; color: var(--green); gap: 8px; transition: background .2s, border-color .2s; }
+.ac-rest-all:hover { background: var(--mint); border-color: var(--green); }
+.ac-rest-all-arrow { font-size: 22px; }
+.ac-rest-all-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-align: center; line-height: 1.4; }
+
+/* ── TOAST ─────────────────────────────────────────────────── */
+.ac-toast { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%) translateY(16px); background: #0d0d0d; color: #fff; font-family: inherit; font-size: 13px; font-weight: 500; padding: 11px 22px; border-radius: 40px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 400; white-space: nowrap; }
+.ac-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── DESKTOP ───────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .ac-layout { grid-template-columns: 55% 45%; min-height: 85vh; align-items: stretch; }
+
+  /* Image area: vertical thumb strip on left, carousel on right */
+  .ac-images {
+    border-right: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "thumbs track"
+      "thumbs dots";
+    overflow: hidden;
+    position: relative;
+  }
+  .ac-track-wrap { grid-area: track; overflow: hidden; }
+  .ac-dots { grid-area: dots; display: none; }
+
+  /* Vertical thumb strip */
+  .ac-thumbs {
+    grid-area: thumbs;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px 8px;
+    gap: 8px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    scrollbar-width: none;
+    align-items: center;
+  }
+  .ac-thumbs::-webkit-scrollbar { display: none; }
+  .ac-thumb { width: 60px; height: 60px; }
+
+  /* Offset prev arrow so it clears the thumb column */
+  .ac-nav-prev { left: calc(76px + 12px); }
+  .ac-nav-next { right: 12px; }
+  .ac-nav-btn { display: flex; }
+
+  .ac-slide { aspect-ratio: auto; min-height: 60vh; max-height: 90vh; }
+  .ac-info { padding: 60px 52px; display: flex; flex-direction: column; justify-content: center; }
+  .ac-lifestyle-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .ac-ls-slot { aspect-ratio: 3/4; }
+  .ac-specs { padding: 80px 60px; }
+  .ac-faq { padding: 80px 60px; }
+  .ac-faq-q { font-size: 15px; }
+  .ac-contact { padding: 80px 60px; }
+  .ac-rest { padding: 80px 60px; }
+  .ac-rest-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+</style>
+
+<!-- STICKY BAR -->
+<div class="ac-sticky" id="acSticky" role="region" aria-label="Quick purchase">
+  <div class="ac-sticky-left">
+    <div class="ac-sticky-name">{{ product.title }}</div>
+    <div class="ac-sticky-price">{{ current_variant.price | money }}</div>
+  </div>
+  <button class="ac-sticky-btn" id="acStickyBtn">Add to Cart</button>
+</div>
+
+<div class="ac-toast" id="acToast" aria-live="polite"></div>
+
+<div class="ac-page">
+
+  <!-- 1. PRODUCT LAYOUT -->
+  <div class="ac-layout" id="acProductLayout">
+
+    <!-- IMAGES -->
+    <div class="ac-images">
+      <div class="ac-track-wrap">
+        <div class="ac-track" id="acTrack">
+          {%- for image in product.images -%}
+            <div class="ac-slide">
+              <img src="{{ image | image_url: width: 900 }}"
+                   alt="{{ image.alt | default: product.title | escape }}"
+                   loading="{{ forloop.first | iif: 'eager', 'lazy' }}"
+                   width="900" height="900">
+            </div>
+          {%- else -%}
+            <div class="ac-slide"><div class="ac-slide-ph">Replace — product image</div></div>
+          {%- endfor -%}
+        </div>
+      </div>
+      {%- if product.images.size > 1 -%}
+        <button class="ac-nav-btn ac-nav-prev" id="acPrev" aria-label="Previous">‹</button>
+        <button class="ac-nav-btn ac-nav-next" id="acNext" aria-label="Next">›</button>
+        <div class="ac-dots" id="acDots">
+          {%- for image in product.images -%}
+            <button class="ac-dot{% if forloop.first %} active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Image {{ forloop.index }}"></button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <!-- THUMBNAIL STRIP — desktop only, vertical left col -->
+      {%- if product.images.size > 1 -%}
+        <div class="ac-thumbs" id="acThumbs">
+          {%- for image in product.images -%}
+            <button class="ac-thumb{% if forloop.first %} active{% endif %}"
+                    data-index="{{ forloop.index0 }}"
+                    aria-label="View image {{ forloop.index }}">
+              <img src="{{ image | image_url: width: 160 }}"
+                   alt="{{ image.alt | default: product.title | escape }}"
+                   loading="lazy" width="160" height="160">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- INFO -->
+    <div class="ac-info">
+      <div class="ac-type">{{ product.type | default: 'Cat Collection' }}</div>
+      <h1 class="ac-title">{{ product.title }}</h1>
+      <div class="ac-byline">Alley Cats by Hemper</div>
+      <div class="ac-price">{{ current_variant.price | money }}</div>
+      {%- if product.description != blank -%}
+        <div class="ac-desc">{{ product.description | strip_html }}</div>
+      {%- endif -%}
+      <hr class="ac-divider">
+
+      <div class="ac-swatch-label">Colorway</div>
+      <div class="ac-swatch-row">
+        <div class="ac-swatch-circle"></div>
+        <span class="ac-swatch-name">Alley Cat</span>
+      </div>
+
+      <div class="ac-qty-row">
+        <span class="ac-qty-label">Qty</span>
+        <div class="ac-qty-wrap">
+          <button class="ac-qty-btn" id="acQtyMinus" aria-label="Decrease">−</button>
+          <input class="ac-qty-input" type="number" id="acQtyInput" value="1" min="1" max="10">
+          <button class="ac-qty-btn" id="acQtyPlus" aria-label="Increase">+</button>
+        </div>
+      </div>
+
+      <button class="ac-atc-btn" id="acAtcBtn">Add to Cart</button>
+      <a href="/collections/cat-collection" class="ac-collection-link">View full collection →</a>
+
+      <div class="ac-trust-strip">
+        <div class="ac-trust-item">1-Year Guarantee — breaks in normal use, we replace it</div>
+        <div class="ac-trust-item">Discreet shipping — plain, unbranded box, no hint of contents</div>
+        <div class="ac-trust-item">A portion of Cat Collection sales supports California cat rescue</div>
+      </div>
+
+      <!-- RETURN_POLICY -->
+      <div class="ac-return">
+        <button class="ac-return-toggle" id="acReturnToggle" aria-expanded="false">
+          <span>Return Policy</span>
+          <span class="ac-return-icon" id="acReturnIcon">+</span>
+        </button>
+        <div class="ac-return-body" id="acReturnBody" aria-hidden="true">
+          We accept returns on unused, unopened items within 14 days of delivery. Items must be in original condition. For hygiene reasons, glass that has been used cannot be returned. If your piece arrived damaged, email us at support@flow3r.shop with a photo and we'll make it right within 48 hours.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- 2. LIFESTYLE IMAGES -->
+  <section class="ac-lifestyle">
+    <div class="ac-lifestyle-grid">
+      {%- if product.handle == 'alley-cats-bong' -%}
+        <div class="ac-ls-slot">
+          <img src="{{ 'warm_lighting_cat_bong_regular_hemper.jpg' | asset_url }}" alt="Alley Cats Bong warm lighting" loading="lazy" width="800" height="1000">
+        </div>
+        <div class="ac-ls-slot">
+          <img src="{{ 'cleancatbongregularhemper.jpg' | asset_url }}" alt="Alley Cats Bong clean studio" loading="lazy" width="800" height="1000">
+        </div>
+        <div class="ac-ls-slot">
+          <img src="{{ 'wheatcatbongregularhemper.jpg' | asset_url }}" alt="Alley Cats Bong wheat background" loading="lazy" width="800" height="1000">
+        </div>
+      {%- elsif product.handle == 'alley-cats-xl-bong' -%}
+        <div class="ac-ls-slot">
+          <img src="{{ 'xlbongondesk.jpg' | asset_url }}" alt="Alley Cats XL Bong on desk" loading="lazy" width="800" height="1000">
+        </div>
+        <div class="ac-ls-slot">
+          <img src="{{ 'proped_up_xl_bong.jpg' | asset_url }}" alt="Alley Cats XL Bong propped up" loading="lazy" width="800" height="1000">
+        </div>
+        <div class="ac-ls-slot">
+          <img src="{{ 'side_view_xl_bong.jpg' | asset_url }}" alt="Alley Cats XL Bong side view" loading="lazy" width="800" height="1000">
+        </div>
+      {%- elsif product.handle == 'alley-cats-hand-pipe' -%}
+        <div class="ac-ls-slot">
+          <img src="{{ 'handpipe_on_counter.jpg' | asset_url }}" alt="Alley Cats Hand Pipe on counter" loading="lazy" width="800" height="1000">
+        </div>
+        <div class="ac-ls-slot">
+          <img src="{{ 'hemper_cat_hand_pipe_living_room.jpg' | asset_url }}" alt="Alley Cats Hand Pipe in living room" loading="lazy">
+        </div>
+        <div class="ac-ls-slot">
+          <img src="{{ 'hemper_cat_pipe_on_counter_table.jpg' | asset_url }}" alt="Alley Cats Hand Pipe on counter" loading="lazy">
+        </div>
+      {%- else -%}
+        <div class="ac-ls-slot"><div class="ac-ls-ph"><span class="ac-ls-ph-label">Replace — Lifestyle 1</span></div></div>
+        <div class="ac-ls-slot"><div class="ac-ls-ph"><span class="ac-ls-ph-label">Replace — Lifestyle 2</span></div></div>
+        <div class="ac-ls-slot"><div class="ac-ls-ph"><span class="ac-ls-ph-label">Replace — Lifestyle 3</span></div></div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <!-- 3. SPECS -->
+  <section class="ac-specs">
+    <h2 class="ac-specs-h">The <em>specs</em>.</h2>
+    {%- if product.handle == 'alley-cats-bong' -%}
+      <div class="ac-spec-row"><span class="ac-spec-key">Height</span><span class="ac-spec-val">9"</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Joint</span><span class="ac-spec-val">14mm female</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Percolation</span><span class="ac-spec-val">Built-in</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Glass</span><span class="ac-spec-val">Borosilicate</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Weight</span><span class="ac-spec-val">10.6 oz</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">SKU</span><span class="ac-spec-val">WP1125</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Brand</span><span class="ac-spec-val">Alley Cats by Hemper</span></div>
+    {%- elsif product.handle == 'alley-cats-xl-bong' -%}
+      <div class="ac-spec-row"><span class="ac-spec-key">Height</span><span class="ac-spec-val">~14–16"</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Joint</span><span class="ac-spec-val">14mm female</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Percolation</span><span class="ac-spec-val">Engineered percolation system</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Glass</span><span class="ac-spec-val">Borosilicate</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Weight</span><span class="ac-spec-val">17 oz</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">SKU</span><span class="ac-spec-val">JWP1125</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Brand</span><span class="ac-spec-val">Alley Cats by Hemper</span></div>
+    {%- elsif product.handle == 'alley-cats-hand-pipe' -%}
+      <div class="ac-spec-row"><span class="ac-spec-key">Length</span><span class="ac-spec-val">~5.5"</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Style</span><span class="ac-spec-val">Spoon — side carb</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Glass</span><span class="ac-spec-val">Borosilicate</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Weight</span><span class="ac-spec-val">5 oz</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">SKU</span><span class="ac-spec-val">HMP-HP-1125</span></div>
+      <div class="ac-spec-row"><span class="ac-spec-key">Brand</span><span class="ac-spec-val">Alley Cats by Hemper</span></div>
+    {%- endif -%}
+  </section>
+
+  <!-- 4. FAQ -->
+  <section class="ac-faq">
+    <h2 class="ac-faq-h">Questions <em>answered</em>.</h2>
+
+    {%- if product.handle == 'alley-cats-bong' or product.handle == 'alley-cats-xl-bong' -%}
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">What joint size does it use?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">14mm female joint — any standard 14mm male bowl fits. A bowl is included.</div>
+      </div>
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">Does it have a percolator?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">{%- if product.handle == 'alley-cats-xl-bong' -%}Yes — an engineered percolation system built into the body. More water volume means smoother, more filtered draws than the standard size.{%- else -%}Yes — built-in percolation for smoother, filtered draws. You'll feel the difference vs. a straight tube.{%- endif -%}</div>
+      </div>
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">How much water do I add?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">Fill until water just covers the bottom of the downstem — about an inch above the slits. Too little kills filtration. Too much and it splashes. Do a test pull before lighting.</div>
+      </div>
+      {%- if product.handle == 'alley-cats-xl-bong' -%}
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">How much bigger is the XL vs. the standard?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">Roughly 14–16" vs. 9". Significantly more water volume, a bigger draw, and more presence. It's the one that anchors a setup.</div>
+      </div>
+      {%- endif -%}
+    {%- elsif product.handle == 'alley-cats-hand-pipe' -%}
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">Does it have a carb hole?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">Yes — standard side carb. Cover while you inhale, release to clear.</div>
+      </div>
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">Any packing tips?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">Grind medium-fine. Don't pack too tight — you need airflow. A light thumb tamp is enough. Overpacking kills the draw.</div>
+      </div>
+      <div class="ac-faq-item">
+        <button class="ac-faq-q" aria-expanded="false">What comes in the box?<span class="ac-faq-icon">+</span></button>
+        <div class="ac-faq-a" aria-hidden="true">Just the pipe. It's self-contained — no separate bowl or downstem needed.</div>
+      </div>
+    {%- endif -%}
+
+    <div class="ac-faq-item">
+      <button class="ac-faq-q" aria-expanded="false">How do I clean it?<span class="ac-faq-icon">+</span></button>
+      <div class="ac-faq-a" aria-hidden="true">{%- if product.handle == 'alley-cats-hand-pipe' -%}Isopropyl alcohol (90%+) and coarse salt in a zip-lock bag. Seal, shake for a minute, rinse with warm water.{%- else -%}Isopropyl alcohol (90%+) and coarse salt. Pour in, cap the openings, shake for 30–60 seconds, rinse with warm water. Repeat if needed. Always rinse thoroughly before use.{%- endif -%}</div>
+    </div>
+    <div class="ac-faq-item">
+      <button class="ac-faq-q" aria-expanded="false">Is the glass actually borosilicate?<span class="ac-faq-icon">+</span></button>
+      <div class="ac-faq-a" aria-hidden="true">Yes. Borosilicate is harder, more heat-resistant, and more durable than soft glass — the same material used in lab glassware. We don't carry soft glass.</div>
+    </div>
+    <div class="ac-faq-item">
+      <button class="ac-faq-q" aria-expanded="false">How is it shipped?<span class="ac-faq-icon">+</span></button>
+      <div class="ac-faq-a" aria-hidden="true">Discreet packaging — a plain, unbranded cardboard box. No logos and nothing on the outside indicates what's inside.</div>
+    </div>
+  </section>
+
+  <!-- 5. CONTACT FORM -->
+  <section class="ac-contact">
+    <h2 class="ac-contact-h">Still have <em>questions</em>?</h2>
+    <p class="ac-contact-sub">We reply within 24 hours, usually faster.</p>
+    <form action="/contact" method="post" class="ac-form" id="acContactForm">
+      <input type="hidden" name="form_type" value="contact">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="contact[subject]" value="Question about {{ product.title | escape }}">
+      <div class="ac-field-row">
+        <div class="ac-field">
+          <label for="acName">Name</label>
+          <input type="text" id="acName" name="contact[name]" placeholder="Your name" required>
+        </div>
+        <div class="ac-field">
+          <label for="acEmail">Email</label>
+          <input type="email" id="acEmail" name="contact[email]" placeholder="your@email.com" required>
+        </div>
+      </div>
+      <div class="ac-field">
+        <label for="acMsg">Message</label>
+        <textarea id="acMsg" name="contact[body]" placeholder="What do you want to know?" required></textarea>
+      </div>
+      <button type="submit" class="ac-form-btn">Send Message</button>
+      <p class="ac-form-success" id="acFormSuccess">Sent. We'll get back to you soon.</p>
+    </form>
+  </section>
+
+  <!-- 6. REST OF THE COLLECTION -->
+  <section class="ac-rest">
+    <h2 class="ac-rest-h">The <em>full collection</em>.</h2>
+    <div class="ac-rest-grid">
+      {%- if product.handle != 'alley-cats-bong' -%}
+        <a href="/products/alley-cats-bong" class="ac-rest-card">
+          <div class="ac-rest-img">
+            <img src="{{ 'HEMPER_ALLEY_CATS_BONG_001_ONWHITE_1080x1080_e91c4145-603b-43d7-bb3b-3e0b252e4754_646f31e70c1ea522.jpg' | asset_url }}" alt="Alley Cats Bong" loading="lazy" width="400" height="400">
+          </div>
+          <div class="ac-rest-body">
+            <div class="ac-rest-name">Alley Cats Bong</div>
+            <div class="ac-rest-price">$59.99</div>
+            <span class="ac-rest-btn">Shop Now</span>
+          </div>
+        </a>
+      {%- endif -%}
+      {%- if product.handle != 'alley-cats-xl-bong' -%}
+        <a href="/products/alley-cats-xl-bong" class="ac-rest-card">
+          <div class="ac-rest-img">
+            <img src="{{ 'HEMPER_ALLEY_CATS_XL_BONG_001_ONWHITE_1080x1080_c0106705-173c-41d4-8188-67a437c30017_a7f557013c6a7bbd.jpg' | asset_url }}" alt="Alley Cats XL Bong" loading="lazy" width="400" height="400">
+          </div>
+          <div class="ac-rest-body">
+            <div class="ac-rest-name">Alley Cats XL Bong</div>
+            <div class="ac-rest-price">$149.99</div>
+            <span class="ac-rest-btn">Shop Now</span>
+          </div>
+        </a>
+      {%- endif -%}
+      {%- if product.handle != 'alley-cats-hand-pipe' -%}
+        <a href="/products/alley-cats-hand-pipe" class="ac-rest-card">
+          <div class="ac-rest-img">
+            <img src="{{ 'HEMPER_ALLEY_CATS_HAND_PIPE_005_ONWHITE_1080x1080_f1125e93-ca2b-4dc3-ac7e-b4d29c17c550_9c352a22a1ffc5c0.jpg' | asset_url }}" alt="Alley Cats Hand Pipe" loading="lazy" width="400" height="400">
+          </div>
+          <div class="ac-rest-body">
+            <div class="ac-rest-name">Alley Cats Hand Pipe</div>
+            <div class="ac-rest-price">$29.99</div>
+            <span class="ac-rest-btn">Shop Now</span>
+          </div>
+        </a>
+      {%- endif -%}
+      <a href="/collections/cat-collection" class="ac-rest-all">
+        <span class="ac-rest-all-arrow">→</span>
+        <span class="ac-rest-all-label">View All</span>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var variantId    = {{ current_variant.id }};
+  var isAdding     = false;
+  var qty          = 1;
+  var slideCount   = {{ product.images.size | default: 1 }};
+  var currentSlide = 0;
+
+  /* Sticky bar */
+  var sticky = document.getElementById('acSticky');
+  var layout = document.getElementById('acProductLayout');
+  if (sticky && layout) {
+    new IntersectionObserver(function(e){ sticky.classList.toggle('visible', !e[0].isIntersecting); }, { threshold: 0 }).observe(layout);
+  }
+
+  /* Qty */
+  var qtyInput = document.getElementById('acQtyInput');
+  document.getElementById('acQtyMinus').addEventListener('click', function(){ if(qty>1){qty--;qtyInput.value=qty;} });
+  document.getElementById('acQtyPlus').addEventListener('click',  function(){ if(qty<10){qty++;qtyInput.value=qty;} });
+  if(qtyInput) qtyInput.addEventListener('change', function(){ qty=Math.max(1,Math.min(10,parseInt(this.value)||1)); this.value=qty; });
+
+  /* Toast */
+  var toast=document.getElementById('acToast'), toastTimer;
+  function showToast(msg){ if(!toast)return; toast.textContent=msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ toast.classList.remove('show'); },2800); }
+
+  /* ATC */
+  function addToCart(btn){
+    if(isAdding)return; isAdding=true;
+    var orig=btn.textContent; btn.disabled=true; btn.textContent='Adding…';
+    fetch('/cart/add.js',{ method:'POST', headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'}, body:JSON.stringify({id:variantId,quantity:qty}) })
+    .then(function(r){ if(!r.ok)throw new Error(); return r.json(); })
+    .then(function(){ btn.textContent='Added ✓'; showToast('Added to cart.'); if(typeof Cart!=='undefined'&&Cart.open)Cart.open(); setTimeout(function(){ btn.textContent=orig; btn.disabled=false; isAdding=false; },1800); })
+    .catch(function(){ btn.textContent='Try again'; showToast('Something went wrong.'); setTimeout(function(){ btn.textContent=orig; btn.disabled=false; isAdding=false; },2000); });
+  }
+  var atcBtn=document.getElementById('acAtcBtn'), stickyBtn=document.getElementById('acStickyBtn');
+  if(atcBtn) atcBtn.addEventListener('click', function(){ addToCart(this); });
+  if(stickyBtn) stickyBtn.addEventListener('click', function(){ addToCart(this); });
+
+  /* Carousel */
+  if(slideCount>1){
+    var track=document.getElementById('acTrack'), dots=document.querySelectorAll('.ac-dot'), prev=document.getElementById('acPrev'), next=document.getElementById('acNext'), thumbs=document.querySelectorAll('.ac-thumb');
+    function goTo(n){ currentSlide=Math.max(0,Math.min(slideCount-1,n)); if(track)track.style.transform='translateX(-'+(currentSlide*100)+'%)'; dots.forEach(function(d,i){ d.classList.toggle('active',i===currentSlide); }); thumbs.forEach(function(t,i){ t.classList.toggle('active',i===currentSlide); }); if(thumbs[currentSlide]){ thumbs[currentSlide].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); } }
+    dots.forEach(function(d){ d.addEventListener('click',function(){ goTo(parseInt(this.dataset.index)); }); });
+    thumbs.forEach(function(t){ t.addEventListener('click',function(){ goTo(parseInt(this.dataset.index)); }); });
+    if(prev) prev.addEventListener('click',function(){ goTo(currentSlide-1); });
+    if(next) next.addEventListener('click',function(){ goTo(currentSlide+1); });
+    if(track){
+      var startX=0;
+      track.addEventListener('touchstart',function(e){ startX=e.touches[0].clientX; },{passive:true});
+      track.addEventListener('touchend',function(e){ var dx=e.changedTouches[0].clientX-startX; if(Math.abs(dx)>40)goTo(dx<0?currentSlide+1:currentSlide-1); },{passive:true});
+    }
+  }
+
+  /* FAQ accordion */
+  document.querySelectorAll('.ac-faq-q').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var ans=this.nextElementSibling, icon=this.querySelector('.ac-faq-icon'), isOpen=ans.classList.contains('open');
+      document.querySelectorAll('.ac-faq-a').forEach(function(a){ a.classList.remove('open'); a.setAttribute('aria-hidden','true'); });
+      document.querySelectorAll('.ac-faq-q').forEach(function(q){ q.setAttribute('aria-expanded','false'); });
+      document.querySelectorAll('.ac-faq-icon').forEach(function(i){ i.classList.remove('open'); });
+      if(!isOpen){ ans.classList.add('open'); ans.setAttribute('aria-hidden','false'); this.setAttribute('aria-expanded','true'); if(icon)icon.classList.add('open'); }
+    });
+  });
+
+  /* Return policy toggle */
+  var rt=document.getElementById('acReturnToggle'), rb=document.getElementById('acReturnBody'), ri=document.getElementById('acReturnIcon');
+  if(rt){ rt.addEventListener('click',function(){ var o=rb.classList.toggle('open'); ri.classList.toggle('open',o); this.setAttribute('aria-expanded',o?'true':'false'); rb.setAttribute('aria-hidden',o?'false':'true'); }); }
+
+  /* Contact form */
+  var cf=document.getElementById('acContactForm'), cs=document.getElementById('acFormSuccess');
+  if(cf){ cf.addEventListener('submit',function(e){
+    e.preventDefault();
+    var sb=this.querySelector('.ac-form-btn'), orig=sb.textContent; sb.disabled=true; sb.textContent='Sending…';
+    fetch('/contact',{ method:'POST', body:new FormData(this), headers:{'X-Requested-With':'XMLHttpRequest'} })
+    .then(function(){ if(cs)cs.classList.add('show'); cf.reset(); sb.textContent=orig; sb.disabled=false; })
+    .catch(function(){ sb.textContent='Try again'; setTimeout(function(){ sb.textContent=orig; sb.disabled=false; },2500); });
+  }); }
+
+})();
+</script>

@@ -1,0 +1,278 @@
+<div class="page-top">
+<div class="pdp-wrap">
+
+  <!-- ═══ BREADCRUMB ═══ -->
+  <nav class="pdp-crumb" aria-label="Breadcrumb">
+    <a href="/pages/shop">Shop</a>
+    <span>→</span>
+    <span>{{ product.title }}</span>
+  </nav>
+
+  <!-- ═══ MAIN GRID ═══ -->
+  <div class="pdp-grid">
+
+    <!-- IMAGES -->
+    <div class="pdp-images">
+      <div class="pdp-main-img-wrap">
+        {%- if product.featured_image != blank -%}
+          <img
+            id="pdp-main-img"
+            class="pdp-main-img"
+            src="{{ product.featured_image | image_url: width: 900 }}"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            width="900"
+            loading="eager">
+        {%- else -%}
+          <div class="pdp-img-placeholder">
+            <span>FLOW3R</span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if product.images.size > 1 -%}
+        <div class="pdp-thumbs">
+          {%- for image in product.images -%}
+            <button
+              class="pdp-thumb{% if forloop.first %} active{% endif %}"
+              onclick="pdpSetImg('{{ image | image_url: width: 900 }}', this)"
+              aria-label="View image {{ forloop.index }}">
+              <img
+                src="{{ image | image_url: width: 120 }}"
+                alt="{{ image.alt | default: product.title | escape }}"
+                width="120"
+                loading="lazy">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- INFO -->
+    <div class="pdp-info">
+
+      {%- if product.type != blank -%}
+        <div class="pdp-eyebrow">{{ product.type }}</div>
+      {%- endif -%}
+
+      <h1 class="pdp-title">{{ product.title }}</h1>
+
+      <div class="pdp-price" id="pdp-price">
+        {%- if product.compare_at_price > product.price -%}
+          <span class="pdp-price-compare">{{ product.compare_at_price | money }}</span>
+        {%- endif -%}
+        <span class="pdp-price-current">{{ product.price | money }}</span>
+      </div>
+
+      {%- unless product.has_only_default_variant -%}
+        <div class="pdp-variants">
+          {%- for option in product.options_with_values -%}
+            <div class="pdp-option-group">
+              <div class="pdp-option-label">{{ option.name }}</div>
+              <div class="pdp-option-vals">
+                {%- for value in option.values -%}
+                  <button
+                    class="pdp-opt-btn{% if forloop.first %} active{% endif %}"
+                    data-option-index="{{ forloop.parentloop.index0 }}"
+                    data-value="{{ value | escape }}"
+                    onclick="pdpSelectOption(this)">
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
+
+      <div class="pdp-atc-row">
+        <div class="pdp-qty">
+          <button onclick="pdpQty(-1)" aria-label="Decrease quantity">−</button>
+          <span id="pdp-qty-val">1</span>
+          <button onclick="pdpQty(1)" aria-label="Increase quantity">+</button>
+        </div>
+        <button class="pdp-atc-btn" id="pdp-atc" onclick="pdpAddToCart()">
+          Add to Cart
+        </button>
+      </div>
+
+      <div class="pdp-trust-row">
+        <span>🔒 Secure checkout</span>
+        <span>📦 Discreet shipping</span>
+        <span>↩ 30-day returns</span>
+      </div>
+
+      {%- if product.description != blank -%}
+        <div class="pdp-desc">
+          {{ product.description }}
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ VARIANT DATA ═══ -->
+<script>
+  const PDP = {
+    variants: {{ product.variants | json }},
+    selectedOptions: [
+      {%- for option in product.options_with_values -%}
+        "{{ option.values.first | escape }}"{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ],
+    qty: 1,
+    currentVariantId: {{ product.selected_or_first_available_variant.id }}
+  };
+
+  function pdpSetImg(src, btn) {
+    document.getElementById('pdp-main-img') && (document.getElementById('pdp-main-img').src = src);
+    document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
+    btn && btn.classList.add('active');
+  }
+
+  function pdpQty(delta) {
+    PDP.qty = Math.max(1, PDP.qty + delta);
+    document.getElementById('pdp-qty-val').textContent = PDP.qty;
+  }
+
+  function pdpSelectOption(btn) {
+    const idx = parseInt(btn.dataset.optionIndex);
+    PDP.selectedOptions[idx] = btn.dataset.value;
+    document.querySelectorAll(`[data-option-index="${idx}"]`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const match = PDP.variants.find(v =>
+      v.options.every((opt, i) => opt === PDP.selectedOptions[i])
+    );
+    if (match) {
+      PDP.currentVariantId = match.id;
+      const priceEl = document.getElementById('pdp-price');
+      const formatted = (match.price / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+      const compareFormatted = match.compare_at_price
+        ? (match.compare_at_price / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+        : null;
+      priceEl.innerHTML = compareFormatted
+        ? `<span class="pdp-price-compare">${compareFormatted}</span><span class="pdp-price-current">${formatted}</span>`
+        : `<span class="pdp-price-current">${formatted}</span>`;
+      const atcBtn = document.getElementById('pdp-atc');
+      atcBtn.textContent = match.available ? 'Add to Cart' : 'Sold Out';
+      atcBtn.disabled = !match.available;
+    }
+  }
+
+  function pdpAddToCart() {
+    const btn = document.getElementById('pdp-atc');
+    btn.textContent = 'Adding…';
+    btn.disabled = true;
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: PDP.currentVariantId, quantity: PDP.qty })
+    })
+    .then(r => r.json())
+    .then(() => {
+      btn.textContent = 'Added ✓';
+      if (typeof Cart !== 'undefined') Cart.refresh();
+      setTimeout(() => {
+        btn.textContent = 'Add to Cart';
+        btn.disabled = false;
+        if (typeof toggleCart !== 'undefined') toggleCart();
+      }, 800);
+    })
+    .catch(() => {
+      btn.textContent = 'Error — Try Again';
+      btn.disabled = false;
+    });
+  }
+</script>
+
+<style>
+  .pdp-wrap { max-width: 1100px; margin: 0 auto; padding: 40px 44px 88px; }
+  .pdp-crumb { font-size: 13px; color: var(--g3); display: flex; align-items: center; gap: 8px; margin-bottom: 36px; }
+  .pdp-crumb a { color: var(--g3); text-decoration: none; }
+  .pdp-crumb a:hover { color: var(--gdk); }
+  .pdp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+
+  /* ── IMAGE COLUMN ── */
+  .pdp-images { display: flex; flex-direction: column; gap: 0; }
+
+  .pdp-main-img-wrap { border-radius: var(--r2); overflow: hidden; background: var(--bg2); aspect-ratio: 1; }
+  .pdp-main-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pdp-img-placeholder { width: 100%; aspect-ratio: 1; background: #1a1a1a; display: flex; align-items: center; justify-content: center; border-radius: var(--r2); }
+  .pdp-img-placeholder span { font-size: 13px; font-weight: 600; letter-spacing: .2em; color: #444; }
+
+  /* Mobile: horizontal scroll strip */
+  .pdp-thumbs {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .pdp-thumbs::-webkit-scrollbar { display: none; }
+
+  .pdp-thumb { border: 2px solid transparent; border-radius: 8px; overflow: hidden; padding: 0; background: none; cursor: pointer; transition: border-color .2s; flex-shrink: 0; }
+  .pdp-thumb.active { border-color: var(--gdk); }
+  .pdp-thumb img { width: 64px; height: 64px; object-fit: cover; display: block; }
+
+  .pdp-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gdk); margin-bottom: 10px; }
+  .pdp-title { font-size: clamp(26px, 3vw, 38px); font-weight: 700; letter-spacing: -.02em; line-height: 1.1; color: var(--bk); margin-bottom: 16px; }
+  .pdp-price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 24px; }
+  .pdp-price-current { font-size: 26px; font-weight: 700; color: var(--bk); }
+  .pdp-price-compare { font-size: 18px; font-weight: 400; color: var(--g3); text-decoration: line-through; }
+  .pdp-option-label { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--g2); margin-bottom: 10px; }
+  .pdp-option-vals { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .pdp-opt-btn { padding: 8px 18px; border: 1.5px solid var(--bd2); border-radius: 8px; background: #fff; font-family: var(--font); font-size: 14px; font-weight: 500; cursor: pointer; transition: all .18s; color: var(--bk); }
+  .pdp-opt-btn:hover { border-color: var(--gdk); }
+  .pdp-opt-btn.active { border-color: var(--gdk); background: var(--gdk); color: #fff; }
+  .pdp-atc-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .pdp-qty { display: flex; align-items: center; gap: 0; border: 1.5px solid var(--bd2); border-radius: 10px; overflow: hidden; }
+  .pdp-qty button { width: 40px; height: 52px; border: none; background: none; font-size: 20px; font-weight: 400; cursor: pointer; color: var(--bk); transition: background .15s; font-family: var(--font); }
+  .pdp-qty button:hover { background: var(--bg2); }
+  .pdp-qty span { width: 36px; text-align: center; font-size: 15px; font-weight: 600; }
+  .pdp-atc-btn { flex: 1; background: var(--gdk); color: #fff; border: none; border-radius: 10px; font-family: var(--font); font-size: 16px; font-weight: 600; letter-spacing: .01em; cursor: pointer; height: 52px; transition: background .2s; }
+  .pdp-atc-btn:hover { background: #1c3d28; }
+  .pdp-atc-btn:disabled { background: var(--g4); cursor: not-allowed; }
+  .pdp-trust-row { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--g2); margin-bottom: 28px; padding: 16px 0; border-top: 1px solid var(--bd); border-bottom: 1px solid var(--bd); }
+  .pdp-desc { font-size: 15px; line-height: 1.75; color: var(--g1); margin-top: 24px; }
+  .pdp-desc h2, .pdp-desc h3 { font-size: 17px; font-weight: 600; margin: 20px 0 8px; color: var(--bk); }
+  .pdp-variants { margin-bottom: 8px; }
+
+  /* ── DESKTOP: vertical thumbs on the left ── */
+  @media (min-width: 769px) {
+    .pdp-images {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .pdp-main-img-wrap { order: 2; }
+    .pdp-thumbs {
+      order: 1;
+      flex-direction: column;
+      overflow-x: unset;
+      overflow-y: auto;
+      margin-top: 0;
+      max-height: 520px;
+      scrollbar-width: none;
+    }
+    .pdp-thumbs::-webkit-scrollbar { display: none; }
+    .pdp-thumb img { width: 76px; height: 76px; }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .pdp-wrap { padding: 24px 20px 64px; }
+    .pdp-grid { grid-template-columns: 1fr; gap: 28px; }
+    .pdp-crumb { margin-bottom: 20px; }
+    .pdp-atc-row { flex-direction: column; }
+    .pdp-qty { justify-content: center; }
+    .pdp-atc-btn { height: 54px; }
+  }
+</style>

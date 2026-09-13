@@ -1,0 +1,603 @@
+{%- comment -%}
+  product.grinder.liquid
+  Flow3r — Custom Grinder / Dedicated Landing Page Template
+  Assign this template to the grinder product in Shopify Admin → Products → Theme template → grinder
+{%- endcomment -%}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign has_product = product.available -%}
+
+<link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@300,400,500,600,700&display=swap" rel="stylesheet">
+
+<style>
+.gr-page *, .gr-page *::before, .gr-page *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.gr-page {
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  color: #0d0d0d;
+  background: #fff;
+  --green: #245034;
+  --mint:  #e8f5ed;
+  --text:  #0d0d0d;
+  --muted: #555550;
+  --bg:    #ffffff;
+  --bg2:   #f6f5f2;
+  --r:     4px;
+  --max:   1280px;
+}
+
+/* ── PLACEHOLDERS ── */
+.f-ph {
+  background: #1a1a1a;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
+  position: relative; overflow: hidden;
+}
+.f-ph::after {
+  content: attr(data-label);
+  color: #444; font-size: 10px;
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  letter-spacing: .15em; text-transform: uppercase; font-weight: 500;
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* ── STICKY BAR ── */
+.gr-sticky {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: #0d0d0d; color: #fff;
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 -4px 24px rgba(0,0,0,.18);
+}
+.gr-sticky.visible { transform: translateY(0); }
+.gr-sticky-name { font-size: 13px; font-weight: 600; letter-spacing: .04em; }
+.gr-sticky-price { font-size: 13px; color: #aaa; font-weight: 400; }
+.gr-sticky-btn {
+  background: var(--green); color: #fff; border: none; border-radius: var(--r);
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 13px; font-weight: 600; letter-spacing: .06em;
+  padding: 11px 22px; cursor: pointer; white-space: nowrap;
+  transition: background .2s;
+}
+.gr-sticky-btn:hover { background: #1a3d26; }
+.gr-sticky-btn.notify { background: #fff; color: var(--green); }
+.gr-sticky-btn.notify:hover { background: var(--mint); }
+
+/* ── HERO ── */
+.gr-hero {
+  position: relative; height: 92vh; min-height: 520px; max-height: 900px;
+  overflow: hidden; background: #111;
+}
+.gr-hero .f-ph { height: 100%; }
+.gr-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.1) 50%, transparent 100%);
+  pointer-events: none;
+}
+.gr-hero-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 40px 24px 44px; color: #fff;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+}
+.gr-eyebrow {
+  font-size: 11px; font-weight: 500; letter-spacing: .18em;
+  text-transform: uppercase; color: rgba(255,255,255,.6);
+}
+.gr-hero-title {
+  font-size: clamp(32px, 8vw, 72px);
+  font-weight: 300; line-height: 1.0; letter-spacing: -.02em;
+}
+.gr-hero-title strong { font-weight: 600; }
+.gr-hero-sub {
+  font-size: 14px; color: rgba(255,255,255,.7);
+  font-weight: 400; max-width: 320px; line-height: 1.5;
+}
+.gr-hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+.gr-hero-price { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+.gr-scroll-hint {
+  font-size: 11px; letter-spacing: .1em; color: rgba(255,255,255,.4);
+  text-transform: uppercase; display: flex; align-items: center; gap: 6px; margin-top: 8px;
+}
+.gr-scroll-hint::after {
+  content: ''; display: block; width: 1px; height: 24px;
+  background: rgba(255,255,255,.3);
+  animation: grScrollLine 1.8s ease-in-out infinite;
+}
+@keyframes grScrollLine { 0%,100% { opacity: .3; } 50% { opacity: .9; } }
+
+/* ── BUTTONS ── */
+.gr-btn-dk {
+  background: var(--green); color: #fff; border: none; border-radius: var(--r);
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 14px; font-weight: 600; letter-spacing: .06em;
+  padding: 14px 32px; cursor: pointer;
+  transition: background .2s, transform .15s; display: inline-block; text-decoration: none;
+}
+.gr-btn-dk:hover { background: #1a3d26; transform: translateY(-1px); }
+.gr-btn-dk:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.gr-btn-lt {
+  background: #fff; color: var(--green); border: none; border-radius: var(--r);
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: .08em;
+  padding: 16px 40px; cursor: pointer;
+  transition: background .2s, transform .15s; display: inline-block;
+}
+.gr-btn-lt:hover { background: var(--mint); transform: translateY(-1px); }
+.gr-btn-lt:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ── STATEMENT ── */
+.gr-statement { background: var(--bg2); padding: 64px 24px; }
+.gr-statement-inner { max-width: var(--max); margin: 0 auto; }
+.gr-statement-text {
+  font-size: clamp(22px, 5vw, 42px); font-weight: 300;
+  line-height: 1.25; letter-spacing: -.02em; max-width: 780px;
+}
+.gr-statement-text em { font-style: normal; font-weight: 600; }
+.gr-statement-note { margin-top: 20px; font-size: 13px; color: var(--muted); letter-spacing: .01em; }
+
+/* ── LIFESTYLE GRID ── */
+.gr-lifestyle { overflow: hidden; }
+.gr-lifestyle-grid { display: grid; grid-template-columns: 1fr; gap: 3px; }
+.gr-ls-a { aspect-ratio: 4/5; }
+.gr-ls-b { aspect-ratio: 4/5; }
+.gr-ls-c { aspect-ratio: 1/1; }
+
+/* ── NOTIFY / BUY SECTION ── */
+.gr-cta-section { padding: 64px 24px; background: var(--bg); }
+.gr-cta-inner { max-width: 520px; margin: 0 auto; }
+.gr-cta-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 24px;
+}
+.gr-cta-h {
+  font-size: clamp(24px, 4vw, 36px); font-weight: 300;
+  letter-spacing: -.02em; line-height: 1.2; margin-bottom: 8px;
+}
+.gr-cta-h em { font-style: normal; font-weight: 600; }
+.gr-cta-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+.gr-cta-price { font-size: 28px; font-weight: 600; letter-spacing: -.02em; margin-bottom: 16px; }
+.gr-notify-form { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.gr-notify-input {
+  flex: 1; min-width: 220px;
+  border: 1.5px solid rgba(0,0,0,.14); border-radius: var(--r);
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 14px; padding: 14px 16px; color: var(--text);
+  outline: none; transition: border-color .2s;
+}
+.gr-notify-input:focus { border-color: var(--green); }
+.gr-notify-btn {
+  background: var(--green); color: #fff; border: none; border-radius: var(--r);
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 14px; font-weight: 600; padding: 14px 24px; cursor: pointer;
+  transition: background .2s; white-space: nowrap;
+}
+.gr-notify-btn:hover { background: #1a3d26; }
+.gr-notify-note { font-size: 12px; color: var(--muted); }
+.gr-atc-note { font-size: 12px; color: var(--muted); margin-top: 10px; letter-spacing: .03em; }
+
+/* ── SPECS ── */
+.gr-specs { padding: 64px 24px; background: var(--bg2); }
+.gr-specs-inner { max-width: var(--max); margin: 0 auto; }
+.gr-specs-h {
+  font-size: clamp(24px, 4vw, 36px); font-weight: 300;
+  letter-spacing: -.02em; margin-bottom: 40px;
+}
+.gr-specs-h em { font-weight: 600; font-style: normal; }
+.gr-spec-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+.gr-spec-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 16px 0; border-bottom: 1px solid #e0ddd8; gap: 16px;
+}
+.gr-spec-row:first-child { border-top: 1px solid #e0ddd8; }
+.gr-spec-key {
+  font-size: 12px; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); flex-shrink: 0;
+}
+.gr-spec-val { font-size: 14px; font-weight: 500; color: var(--text); text-align: right; }
+
+/* ── BUILD QUALITY ── */
+.gr-build { padding: 72px 24px; background: var(--bg); }
+.gr-build-inner { max-width: var(--max); margin: 0 auto; }
+.gr-build-h {
+  font-size: clamp(22px, 4vw, 34px); font-weight: 300;
+  letter-spacing: -.02em; margin-bottom: 40px; max-width: 480px;
+}
+.gr-build-h em { font-weight: 600; font-style: normal; }
+.gr-build-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+.gr-build-item {
+  padding: 24px 0; border-bottom: 1px solid #eee;
+  display: grid; grid-template-columns: 28px 1fr; gap: 16px; align-items: start;
+}
+.gr-build-item:first-child { border-top: 1px solid #eee; }
+.gr-build-icon { font-size: 18px; line-height: 1.4; }
+.gr-build-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; letter-spacing: .02em; }
+.gr-build-desc  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+/* ── FEATURE SPLIT ── */
+.gr-feature { display: grid; grid-template-columns: 1fr; min-height: 480px; overflow: hidden; }
+.gr-feature-img { aspect-ratio: 4/3; }
+.gr-feature-text {
+  background: var(--green); color: #fff;
+  padding: 48px 28px;
+  display: flex; flex-direction: column; justify-content: center; gap: 16px;
+}
+.gr-feature-eyebrow {
+  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255,255,255,.55); font-weight: 500;
+}
+.gr-feature-h {
+  font-size: clamp(26px, 5vw, 44px); font-weight: 300;
+  line-height: 1.1; letter-spacing: -.02em;
+}
+.gr-feature-h strong { font-weight: 600; }
+.gr-feature-body { font-size: 14px; line-height: 1.65; color: rgba(255,255,255,.78); max-width: 420px; }
+
+/* ── TRUST ── */
+.gr-trust { padding: 40px 24px; background: var(--bg2); border-top: 1px solid #e8e6e1; }
+.gr-trust-inner {
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px 16px;
+}
+.gr-trust-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+.gr-trust-val   { font-size: 13px; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+
+/* ── FINAL CTA ── */
+.gr-final {
+  background: var(--green); padding: 80px 24px;
+  text-align: center; color: #fff;
+}
+.gr-final-h {
+  font-size: clamp(28px, 6vw, 52px); font-weight: 300;
+  letter-spacing: -.02em; line-height: 1.1; margin-bottom: 8px;
+}
+.gr-final-h strong { font-weight: 600; }
+.gr-final-sub { font-size: 14px; color: rgba(255,255,255,.65); margin-bottom: 32px; }
+.gr-final-price { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: rgba(255,255,255,.85); }
+.gr-final-note { margin-top: 16px; font-size: 11px; color: rgba(255,255,255,.4); letter-spacing: .08em; text-transform: uppercase; }
+.gr-final-notify { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
+.gr-final-input {
+  border: 1.5px solid rgba(255,255,255,.3); border-radius: var(--r);
+  background: rgba(255,255,255,.08); color: #fff;
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 14px; padding: 14px 18px; outline: none; min-width: 220px;
+  transition: border-color .2s;
+}
+.gr-final-input::placeholder { color: rgba(255,255,255,.4); }
+.gr-final-input:focus { border-color: rgba(255,255,255,.7); }
+
+/* ── TOAST ── */
+.gr-toast {
+  position: fixed; bottom: 72px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #0d0d0d; color: #fff;
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 12px 24px; border-radius: 40px;
+  opacity: 0; transition: opacity .25s, transform .25s;
+  pointer-events: none; z-index: 300; white-space: nowrap;
+}
+.gr-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── DESKTOP ── */
+@media (min-width: 768px) {
+  .gr-hero-content { padding: 60px 60px 72px; }
+  .gr-statement { padding: 100px 60px; }
+  .gr-lifestyle-grid { grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+  .gr-ls-a, .gr-ls-b, .gr-ls-c { aspect-ratio: 3/4; }
+  .gr-cta-section { padding: 80px 60px; }
+  .gr-specs { padding: 100px 60px; }
+  .gr-spec-grid { grid-template-columns: 1fr 1fr; column-gap: 60px; }
+  .gr-build { padding: 100px 60px; }
+  .gr-build-grid { grid-template-columns: 1fr 1fr; column-gap: 60px; }
+  .gr-feature { grid-template-columns: 1fr 1fr; min-height: 560px; }
+  .gr-feature-img { aspect-ratio: auto; }
+  .gr-feature-text { padding: 64px 60px; }
+  .gr-trust { padding: 48px 60px; }
+  .gr-trust-inner { grid-template-columns: repeat(4, 1fr); }
+  .gr-final { padding: 120px 60px; }
+  .gr-sticky { padding: 16px 40px; }
+}
+</style>
+
+<!-- STICKY BAR -->
+<div class="gr-sticky" id="grSticky">
+  <div>
+    <div class="gr-sticky-name">FLOW3R Grinder</div>
+    <div class="gr-sticky-price" id="grStickyPrice">
+      {%- if has_product -%}{{ current_variant.price | money }}{%- else -%}Coming Soon{%- endif -%}
+    </div>
+  </div>
+  {%- if has_product -%}
+    <button class="gr-sticky-btn" id="grStickyBtn">Add to Cart</button>
+  {%- else -%}
+    <button class="gr-sticky-btn notify" onclick="document.getElementById('grNotifyEmail').focus()">Notify Me</button>
+  {%- endif -%}
+</div>
+
+<!-- TOAST -->
+<div class="gr-toast" id="grToast" aria-live="polite"></div>
+
+<div class="gr-page" id="grHeroRef">
+
+  <!-- 1. HERO -->
+  <section class="gr-hero">
+    <div class="f-ph" style="height:100%" data-label="REPLACE — Hero image (grinder · dark bg · 1800×1100)"></div>
+    <div class="gr-hero-overlay"></div>
+    <div class="gr-hero-content" id="grTrigger">
+      <div class="gr-eyebrow">Flow3r Glass — California</div>
+      <h1 class="gr-hero-title">Flow3r<br><strong>Grinder.</strong></h1>
+      <p class="gr-hero-sub">Precision-cut teeth. Kief catcher. Built to outlast the cheap ones.</p>
+      <div class="gr-hero-actions">
+        {%- if has_product -%}
+          <span class="gr-hero-price" id="grHeroPrice">{{ current_variant.price | money }}</span>
+          <button class="gr-btn-dk" id="grHeroBtn">Add to Cart</button>
+        {%- else -%}
+          <button class="gr-btn-dk" onclick="document.getElementById('grNotifyEmail').focus();document.getElementById('grNotifyEmail').scrollIntoView({behavior:'smooth',block:'center'})">
+            Get Notified →
+          </button>
+        {%- endif -%}
+      </div>
+      <div class="gr-scroll-hint">Scroll</div>
+    </div>
+  </section>
+
+  <!-- 2. STATEMENT -->
+  <section class="gr-statement">
+    <div class="gr-statement-inner">
+      <p class="gr-statement-text">
+        Most grinders are made to be forgotten.<br>
+        This one is made to be <em>used every day.</em>
+      </p>
+      <p class="gr-statement-note">Aluminum · precision teeth · 4-piece · kief catcher · magnetic lid</p>
+    </div>
+  </section>
+
+  <!-- 3. LIFESTYLE GRID -->
+  <section class="gr-lifestyle" aria-label="Product photography">
+    <div class="gr-lifestyle-grid">
+      <div class="gr-ls-a">
+        <div class="f-ph" style="height:100%" data-label="REPLACE — Lifestyle 1 (grinder on surface · natural light)"></div>
+      </div>
+      <div class="gr-ls-b">
+        <div class="f-ph" style="height:100%" data-label="REPLACE — Lifestyle 2 (teeth detail · close-up)"></div>
+      </div>
+      <div class="gr-ls-c">
+        <div class="f-ph" style="height:100%" data-label="REPLACE — Lifestyle 3 (kief catcher · exploded view)"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. CTA / NOTIFY -->
+  <section class="gr-cta-section">
+    <div class="gr-cta-inner">
+      {%- if has_product -%}
+        <div class="gr-cta-label">Available Now</div>
+        <h2 class="gr-cta-h">Built for <em>daily use.</em></h2>
+        <p class="gr-cta-sub">Precision-machined aluminum, 4-piece, magnetic lid, kief catcher. Ships discreet.</p>
+        <div class="gr-cta-price" id="grMidPrice">{{ current_variant.price | money }}</div>
+        <button class="gr-btn-dk" id="grMidBtn" style="width:100%;max-width:360px;text-align:center">Add to Cart</button>
+        <p class="gr-atc-note">Free shipping over $75 · 1-Year guarantee · Discreet plain packaging</p>
+      {%- else -%}
+        <div class="gr-cta-label">Coming Soon</div>
+        <h2 class="gr-cta-h">Be first<br>to <em>know.</em></h2>
+        <p class="gr-cta-sub">Drop your email and we'll notify you the moment it's available. No spam — just the one email that matters.</p>
+        {%- form 'customer', id: 'grinder-notify-form' -%}
+          <input type="hidden" name="contact[tags]" value="grinder-waitlist">
+          <input type="hidden" name="contact[accepts_marketing]" value="true">
+          <div class="gr-notify-form">
+            <input class="gr-notify-input" id="grNotifyEmail" type="email" name="contact[email]" placeholder="your@email.com" autocomplete="email" required>
+            <button type="submit" class="gr-notify-btn">Notify Me</button>
+          </div>
+          {%- if form.posted_successfully? -%}
+            <p style="font-size:14px;color:var(--green);font-weight:600;margin-top:8px">You're on the list. We'll email you when it drops.</p>
+          {%- endif -%}
+          <p class="gr-notify-note">No spam. One email when it launches.</p>
+        {%- endform -%}
+      {%- endif -%}
+    </div>
+  </section>
+
+  <!-- 5. SPECS -->
+  <section class="gr-specs">
+    <div class="gr-specs-inner">
+      <h2 class="gr-specs-h">The specs,<br>for the people who <em>care.</em></h2>
+      <div class="gr-spec-grid">
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Material</span>
+          <span class="gr-spec-val">Anodized aluminum</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Pieces</span>
+          <span class="gr-spec-val">4-piece</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Diameter</span>
+          <span class="gr-spec-val">TBD</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Teeth</span>
+          <span class="gr-spec-val">Diamond-cut · precision machined</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Lid</span>
+          <span class="gr-spec-val">Magnetic</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Kief catcher</span>
+          <span class="gr-spec-val">Yes · fine mesh screen</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Scraper</span>
+          <span class="gr-spec-val">Included</span>
+        </div>
+        <div class="gr-spec-row">
+          <span class="gr-spec-key">Colorways</span>
+          <span class="gr-spec-val">TBD</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. BUILD QUALITY -->
+  <section class="gr-build">
+    <div class="gr-build-inner">
+      <h2 class="gr-build-h">Why it's <em>different</em><br>from the $10 ones.</h2>
+      <div class="gr-build-grid">
+        <div class="gr-build-item">
+          <div class="gr-build-icon">◈</div>
+          <div>
+            <div class="gr-build-title">Anodized Aluminum</div>
+            <div class="gr-build-desc">Hard-anodized finish is scratch resistant, doesn't flake, and won't contaminate what you're grinding. The finish goes into the metal, not onto it.</div>
+          </div>
+        </div>
+        <div class="gr-build-item">
+          <div class="gr-build-icon">⬡</div>
+          <div>
+            <div class="gr-build-title">Diamond-Cut Teeth</div>
+            <div class="gr-build-desc">Precision-machined teeth cut clean and consistent every time. No snagging, no clumping. The geometry is the whole point — most cheap grinders get this wrong.</div>
+          </div>
+        </div>
+        <div class="gr-build-item">
+          <div class="gr-build-icon">○</div>
+          <div>
+            <div class="gr-build-title">Magnetic Lid</div>
+            <div class="gr-build-desc">Strong magnet keeps the lid seated. Nothing spills mid-grind. It's a small detail that becomes a big deal every single time you use it.</div>
+          </div>
+        </div>
+        <div class="gr-build-item">
+          <div class="gr-build-icon">❖</div>
+          <div>
+            <div class="gr-build-title">Kief Catcher</div>
+            <div class="gr-build-desc">Fine mesh screen separates the good stuff automatically. The scraper is included. This is the feature that makes a 4-piece worth owning over a 2-piece.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. FEATURE SPLIT -->
+  <section class="gr-feature">
+    <div class="gr-feature-img">
+      <div class="f-ph" style="height:100%;min-height:320px" data-label="REPLACE — Feature image (grinder · dramatic light · dark surface)"></div>
+    </div>
+    <div class="gr-feature-text">
+      <div class="gr-feature-eyebrow">California — Built for the shelf</div>
+      <h2 class="gr-feature-h">
+        The grinder that<br><strong>doesn't embarrass</strong><br>your setup.
+      </h2>
+      <p class="gr-feature-body">
+        Most grinders are hidden in a drawer. This one is designed to be left out — clean geometry, consistent finish, and nothing about it that reads cheap.
+      </p>
+    </div>
+  </section>
+
+  <!-- 8. TRUST -->
+  <section class="gr-trust">
+    <div class="gr-trust-inner">
+      <div>
+        <div class="gr-trust-label">1-Year Guarantee</div>
+        <div class="gr-trust-val">Defects covered. No forms, no runaround.</div>
+      </div>
+      <div>
+        <div class="gr-trust-label">Discreet Shipping</div>
+        <div class="gr-trust-val">Plain box. "FL Logistics" return address. Always.</div>
+      </div>
+      <div>
+        <div class="gr-trust-label">Anodized Only</div>
+        <div class="gr-trust-val">No painted finishes that chip into your grind.</div>
+      </div>
+      <div>
+        <div class="gr-trust-label">Cat Fam</div>
+        <div class="gr-trust-val">10% of Cat Collection sales support local California cat rescues.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. FINAL CTA -->
+  <section class="gr-final">
+    {%- if has_product -%}
+      <h2 class="gr-final-h">Built to<br><strong>outlast the rest.</strong></h2>
+      <p class="gr-final-sub">Anodized aluminum · 4-piece · kief catcher · 1-year guarantee</p>
+      <div class="gr-final-price" id="grFinalPrice">{{ current_variant.price | money }}</div>
+      <button class="gr-btn-lt" id="grFinalBtn">Add to Cart</button>
+      <div class="gr-final-note">Free shipping over $75 · California</div>
+    {%- else -%}
+      <h2 class="gr-final-h">Almost<br><strong>here.</strong></h2>
+      <p class="gr-final-sub">Get notified the moment it drops. One email. No spam.</p>
+      {%- form 'customer', id: 'grinder-notify-form-bottom' -%}
+        <input type="hidden" name="contact[tags]" value="grinder-waitlist">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <div class="gr-final-notify">
+          <input class="gr-final-input" type="email" name="contact[email]" placeholder="your@email.com" autocomplete="email" required>
+          <button type="submit" class="gr-btn-lt">Notify Me</button>
+        </div>
+        {%- if form.posted_successfully? -%}
+          <p style="font-size:14px;color:rgba(255,255,255,.8);font-weight:600;margin-top:8px">You're on the list.</p>
+        {%- endif -%}
+      {%- endform -%}
+      <div class="gr-final-note">No spam · One email when it launches</div>
+    {%- endif -%}
+  </section>
+
+</div>
+
+<script>
+(function() {
+  var sticky  = document.getElementById('grSticky');
+  var trigger = document.getElementById('grTrigger');
+  var toast   = document.getElementById('grToast');
+  var isAdding = false;
+
+  // Sticky bar shows after hero scrolls past
+  if (sticky && trigger) {
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (!e.isIntersecting) sticky.classList.add('visible'); });
+    }, { threshold: 0 });
+    io.observe(trigger);
+  }
+
+  // Toast
+  var toastTimer;
+  function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2800);
+  }
+
+  // Add to cart (only fires if product is live)
+  function addToCart(btn) {
+    if (isAdding) return;
+    isAdding = true;
+    var variantId = {{ current_variant.id | default: 'null' }};
+    if (!variantId) return;
+    var orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: variantId, quantity: 1 })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function() {
+      btn.textContent = 'Added ✓';
+      showToast('Grinder added to cart.');
+      if (typeof Cart !== 'undefined' && Cart.open) Cart.open();
+      setTimeout(function() { btn.textContent = orig; btn.disabled = false; isAdding = false; }, 1800);
+    })
+    .catch(function() {
+      btn.textContent = 'Try again';
+      setTimeout(function() { btn.textContent = orig; btn.disabled = false; isAdding = false; }, 2000);
+    });
+  }
+
+  ['grHeroBtn','grMidBtn','grFinalBtn','grStickyBtn'].forEach(function(id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', function() { addToCart(this); });
+  });
+})();
+</script>

@@ -1,0 +1,252 @@
+{%- comment -%}
+  index.liquid — FLOW3R Homepage v2
+  Same system as the shop: white images framed, green editorial bands for
+  contrast, contained max-width (no more edge-to-edge), products link to
+  landing pages. Structure preserved; imagery scaled down. Self-contained.
+{%- endcomment -%}
+
+{%- assign wp = all_products['8-flow3r-water-pipe'] -%}
+{%- assign cat_col = collections['cat-collection'] -%}
+{%- assign wpv = wp.selected_or_first_available_variant -%}
+{%- if wpv == blank -%}{%- assign wpv = wp.variants.first -%}{%- endif -%}
+
+<div class="hx page-top">
+
+<style>
+  .hx{--green:#245034;--green-h:#1a3d26;--bk:#0d0d0d;--muted:#6b6b66;--line:#e2e2e2;font-family:'Neue Montreal',system-ui,-apple-system,sans-serif;color:var(--bk);background:#fff;}
+  .hx *,.hx *::before,.hx *::after{box-sizing:border-box;}
+  .hx img{display:block;}
+  .hx-eyebrow{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;display:block;}
+  .hx-wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .hx-sec{padding:64px 0;}
+
+  .hx-hero{position:relative;background:#245034;overflow:hidden;}
+  .hx-hero-img{display:block;width:100%;height:520px;object-fit:cover;object-position:26% center;background:#245034;}
+  .hx-hero-content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;}
+  .hx-hero-text{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:30ch;}
+  .hx-hero-eyebrow{color:rgba(232,245,237,.85);margin-bottom:12px;text-shadow:0 1px 12px rgba(13,30,20,.6);}
+  .hx-hero-h1{font-size:clamp(30px,6vw,54px);font-weight:300;letter-spacing:-.03em;line-height:1.04;color:#fff;margin:0 0 22px;text-shadow:0 2px 18px rgba(13,30,20,.55);}
+  .hx-hero-btn{display:inline-block;white-space:nowrap;background:transparent;color:#fff;text-decoration:none;border:1.5px solid rgba(255,255,255,.85);border-radius:4px;font-size:13px;font-weight:500;letter-spacing:.08em;padding:15px 32px;transition:background .25s ease,color .25s ease,border-color .25s ease;}
+  .hx-hero-btn:hover{background:#fff;color:var(--green);border-color:#fff;}
+  @media(min-width:768px){
+    .hx-hero-img{height:calc(100svh - 72px);object-fit:cover;object-position:18% 32%;}
+    .hx-hero-content{justify-content:flex-end;padding:0;}
+    .hx-hero-inner{width:100%;max-width:1280px;margin:0 auto;padding:0 48px;display:flex;justify-content:flex-end;}
+    .hx-hero-text{align-items:flex-start;text-align:left;max-width:26ch;}
+    .hx-hero-eyebrow,.hx-hero-h1{text-shadow:none;}
+    .hx-hero-eyebrow{font-size:13px;margin-bottom:18px;}
+    .hx-hero-h1{font-size:clamp(52px,5vw,84px);margin-bottom:30px;}
+    .hx-hero-btn{font-size:14px;padding:17px 40px;letter-spacing:.1em;}
+  }
+  .hx-flag-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;}
+  .hx-frame{border:none;background:transparent;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .hx-flag-frame{aspect-ratio:4/5;padding:13%;}
+  .hx-flag-img{width:100%;height:100%;object-fit:contain;transition:transform .6s cubic-bezier(.22,1,.36,1);}
+  .hx-frame:hover .hx-flag-img{transform:scale(1.05);}
+  @media(hover:none){.hx-frame:hover .hx-flag-img{transform:none;}}
+  .hx-flag-eyebrow{color:var(--green);margin-bottom:14px;}
+  .hx-flag-h{font-size:clamp(28px,5vw,44px);font-weight:500;letter-spacing:-.03em;line-height:1;margin:0 0 14px;}
+  .hx-flag-body{font-size:16px;line-height:1.6;color:var(--muted);max-width:420px;margin:0 0 18px;}
+  .hx-price-row{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+  .hx-price{font-size:20px;font-weight:500;}
+  .hx-vnote{font-size:13px;color:#999;border-left:1px solid #ddd;padding-left:12px;}
+  .hx-link{font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--green);text-decoration:none;border-bottom:1.5px solid var(--green);padding-bottom:3px;}
+  .hx-link:hover{opacity:.7;}
+
+  .hx-div{height:1px;background:var(--line);max-width:1180px;margin:0 auto;}
+
+  .hx-why .hx-eyebrow{color:var(--green);margin-bottom:14px;}
+  .hx-why-h{font-size:clamp(24px,4vw,38px);font-weight:300;letter-spacing:-.03em;line-height:1.12;max-width:22ch;margin:0 0 40px;}
+  .hx-why-grid{display:grid;grid-template-columns:1fr;gap:36px;}
+  .hx-why-img{width:100%;aspect-ratio:3/4;object-fit:cover;margin-bottom:18px;}
+  .hx-why-h3{font-size:18px;font-weight:500;margin:0 0 8px;letter-spacing:-.01em;}
+  .hx-why-p{font-size:15px;color:var(--muted);line-height:1.6;margin:0;}
+
+  .hx-cat{background:var(--green);padding:64px 0;}
+  .hx-cat .hx-eyebrow{color:rgba(232,245,237,.55);margin-bottom:14px;}
+  .hx-cat-h{font-size:clamp(26px,4vw,42px);font-weight:300;letter-spacing:-.025em;line-height:1.1;color:#fff;margin:0 0 14px;}
+  .hx-cat-p{font-size:15px;line-height:1.6;color:rgba(255,255,255,.62);max-width:48ch;margin:0 0 32px;}
+  .hx-cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px;}
+  .hx-cat-frame{border:none;background:#fff;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;padding:10%;overflow:hidden;margin-bottom:12px;}
+  .hx-cat-img{width:100%;height:100%;object-fit:contain;transition:transform .6s cubic-bezier(.22,1,.36,1);}
+  .hx-cat-grid a:hover .hx-cat-img{transform:scale(1.05);}
+  @media(hover:none){.hx-cat-grid a:hover .hx-cat-img{transform:none;}}
+  .hx-cat-name{font-size:13px;font-weight:500;color:#fff;}
+  .hx-cat-meta{font-size:12px;color:rgba(255,255,255,.55);margin-top:2px;}
+  .hx-cat-btn{display:inline-block;background:#fff;color:var(--green);text-decoration:none;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:.05em;padding:13px 26px;}
+
+  .hx-social .hx-eyebrow{color:var(--green);margin-bottom:14px;}
+  .hx-social-h{font-size:clamp(22px,4vw,36px);font-weight:300;letter-spacing:-.025em;line-height:1.1;margin:0 0 10px;}
+  .hx-social-p{font-size:15px;color:var(--muted);line-height:1.6;margin:0 0 16px;}
+  .hx-social-handles{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:28px;}
+  .hx-social-handle{font-size:13px;font-weight:500;color:var(--green);text-decoration:none;letter-spacing:.02em;}
+  .hx-social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .hx-social-tile{position:relative;aspect-ratio:1;overflow:hidden;display:block;}
+  .hx-social-tile img{width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.22,1,.36,1);}
+  .hx-social-tile:hover img{transform:scale(1.05);}
+  @media(hover:none){.hx-social-tile:hover img{transform:none;}}
+
+  .hx-close{background:var(--green);padding:64px 0 72px;text-align:center;}
+  .hx-close-in{max-width:480px;margin:0 auto;padding:0 24px;}
+  .hx-close .hx-eyebrow{color:rgba(232,245,237,.55);margin-bottom:14px;}
+  .hx-close-h{font-size:clamp(24px,4vw,36px);font-weight:300;letter-spacing:-.025em;color:#fff;line-height:1.1;margin:0 0 12px;}
+  .hx-close-p{font-size:15px;color:rgba(255,255,255,.55);margin:0 0 26px;line-height:1.6;}
+  .hx-form{display:flex;gap:8px;max-width:400px;margin:0 auto;flex-wrap:wrap;}
+  .hx-input{flex:1;min-width:180px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:4px;color:#fff;font-family:inherit;font-size:14px;padding:12px 16px;}
+  .hx-input::placeholder{color:rgba(255,255,255,.35);}
+  .hx-input:focus{outline:none;border-color:rgba(255,255,255,.4);}
+  .hx-submit{background:#fff;color:var(--green);border:none;border-radius:4px;font-family:inherit;font-size:13px;font-weight:500;letter-spacing:.05em;padding:12px 24px;cursor:pointer;}
+  .hx-msg{width:100%;font-size:13px;margin-top:10px;color:rgba(232,245,237,.85);}
+  .hx-trust{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;border-top:1px solid rgba(255,255,255,.14);padding-top:24px;margin-top:34px;}
+  .hx-trust div{font-size:11px;font-weight:500;color:rgba(232,245,237,.9);letter-spacing:.04em;}
+  .hx-fine{font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.3);margin-top:18px;}
+
+  @media(min-width:768px){
+    .hx-flag-grid{grid-template-columns:0.9fr 1fr;gap:60px;}
+    .hx-why-grid{grid-template-columns:repeat(3,1fr);gap:28px;}
+    .hx-social-grid{grid-template-columns:repeat(6,1fr);}
+    .hx-trust{grid-template-columns:repeat(4,1fr);}
+    .hx-form{flex-wrap:nowrap;}
+  }
+  @media(min-width:900px){
+    .hx-sec{padding:96px 0;}
+    .hx-cat{padding:96px 0;}
+    .hx-close{padding:96px 0 112px;}
+  }
+</style>
+
+  {%- comment -%} HERO {%- endcomment -%}
+  <section class="hx-hero reveal" aria-label="FLOW3R">
+    <img class="hx-hero-img" src="{{ 'Upscaled_beaker_bongs2.png' | asset_url }}" alt="FLOW3R 8-inch beaker water pipe — green, blue and pink colorways" width="1600" height="1000">
+    <div class="hx-hero-content">
+      <div class="hx-hero-inner">
+      <div class="hx-hero-text">
+        <span class="hx-eyebrow hx-hero-eyebrow">8&quot; Beaker · Three colorways</span>
+        <h1 class="hx-hero-h1">Your rotation deserves better.</h1>
+        <a class="hx-hero-btn" href="{{ wp.url | default: '/products/8-flow3r-water-pipe' }}">Shop the collection</a>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} FLAGSHIP — links to landing page {%- endcomment -%}
+  {%- if wp != blank -%}
+  <section class="hx-sec hx-flag reveal">
+    <div class="hx-wrap hx-flag-grid">
+      <a class="hx-frame hx-flag-frame" href="{{ wp.url }}" aria-label="{{ wp.title | escape }}">
+        {%- if wp.featured_image != blank -%}
+          <img class="hx-flag-img" src="{{ wp.featured_image | image_url: width: 1000 }}" width="1000" height="1250" alt="{{ wp.title | escape }}" loading="lazy">
+        {%- endif -%}
+      </a>
+      <div>
+        <span class="hx-eyebrow hx-flag-eyebrow">Now available</span>
+        <h2 class="hx-flag-h">{{ wp.title }}</h2>
+        <p class="hx-flag-body">Borosilicate beaker. Ice pinch. Three colored rims — pink, blue, green.</p>
+        <div class="hx-price-row">
+          <span class="hx-price">{{ wpv.price | money }}</span>
+          {%- if wp.variants.size > 1 -%}<span class="hx-vnote">{{ wp.variants.size }} colorways</span>{%- endif -%}
+        </div>
+        <a class="hx-link" href="{{ wp.url }}">View the water pipe →</a>
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  <div class="hx-div"></div>
+
+  {%- comment -%} WHY FLOW3R {%- endcomment -%}
+  <section class="hx-sec hx-why reveal">
+    <div class="hx-wrap">
+      <span class="hx-eyebrow">Why FLOW3R</span>
+      <h2 class="hx-why-h">We got tired of choosing between glass that looked good and glass that worked.</h2>
+      <div class="hx-why-grid">
+        <div>
+          <img class="hx-why-img" src="{{ 'bluebongsmoke.jpg' | asset_url }}" alt="Engineered airflow" loading="lazy">
+          <h3 class="hx-why-h3">Engineered airflow</h3>
+          <p class="hx-why-p">Every downstem angle, chamber size, and joint spec is chosen for one reason — the cleanest, smoothest draw. We test, we don't guess.</p>
+        </div>
+        <div>
+          <img class="hx-why-img" src="{{ 'beaker_on_countertop.jpg' | asset_url }}" alt="Borosilicate only" loading="lazy">
+          <h3 class="hx-why-h3">Borosilicate only</h3>
+          <p class="hx-why-p">Lab-grade glass — no acrylic, no soft plastics, no rubber that burns. Chemically inert at any temperature. What goes in is what comes out.</p>
+        </div>
+        <div>
+          <img class="hx-why-img" src="{{ 'green-white-studio-bg.jpg' | asset_url }}" alt="Clean is a feature" loading="lazy">
+          <h3 class="hx-why-h3">Clean is a feature</h3>
+          <p class="hx-why-p">Wide bases, removable downstems, accessible chambers. Beautiful gear that doesn't become a chore to keep clear.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} CAT COLLECTION — green band, framed tiles {%- endcomment -%}
+  <section class="hx-cat reveal" aria-labelledby="hxCatH">
+    <div class="hx-wrap">
+      <span class="hx-eyebrow">The Cat Collection</span>
+      <h2 id="hxCatH" class="hx-cat-h">Pieces with personality.</h2>
+      <p class="hx-cat-p">Alley Cats by Hemper. A portion of Cat Collection sales is donated to local California cat rescue.</p>
+      {%- if cat_col != blank and cat_col.products.size > 0 -%}
+        <div class="hx-cat-grid">
+          {%- for product in cat_col.products limit: 3 -%}
+            <a href="{{ product.url }}" style="text-decoration:none;color:inherit;display:block;">
+              <div class="hx-cat-frame">
+                {%- if product.featured_image != blank -%}
+                  <img class="hx-cat-img" src="{{ product.featured_image | image_url: width: 700 }}" width="700" height="875" alt="{{ product.title | escape }}" loading="lazy">
+                {%- endif -%}
+              </div>
+              <div class="hx-cat-name">{{ product.title }}</div>
+              <div class="hx-cat-meta">{{ product.price | money }}</div>
+            </a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      <a href="/pages/cat-fam" class="hx-cat-btn">Visit the Cat Fam page</a>
+    </div>
+  </section>
+
+  {%- comment -%} SOCIAL {%- endcomment -%}
+  <section class="hx-sec hx-social reveal">
+    <div class="hx-wrap">
+      <span class="hx-eyebrow">Follow along</span>
+      <h2 class="hx-social-h">We're on Instagram &amp; TikTok.</h2>
+      <p class="hx-social-p">Glass culture, new drops, behind-the-scenes, and community builds.</p>
+      <div class="hx-social-handles">
+        <a class="hx-social-handle" href="https://instagram.com/flow3r.glass" target="_blank" rel="noopener">Instagram @flow3r.glass ↗</a>
+        <a class="hx-social-handle" href="https://tiktok.com/@flow3r.shop" target="_blank" rel="noopener">TikTok @flow3r.shop ↗</a>
+      </div>
+      {%- assign social_imgs = "{{ 'Simple.png' | asset_url }}" | split: "," -%}
+      <div class="hx-social-grid">
+        {%- for img in social_imgs -%}
+          <a class="hx-social-tile" href="https://instagram.com/flow3r.glass" target="_blank" rel="noopener" aria-label="FLOW3R on Instagram">
+            <img src="{{ img }}" alt="FLOW3R on Instagram" loading="lazy">
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} CLOSE — email + trust {%- endcomment -%}
+  <section class="hx-close reveal">
+    <div class="hx-close-in">
+      <span class="hx-eyebrow">Stay close</span>
+      <h2 class="hx-close-h">Stay in the loop.</h2>
+      <p class="hx-close-p">New drops, early access, the occasional deal. No spam.</p>
+      {%- form 'customer', id: 'hx-newsletter' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter,homepage">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <div class="hx-form">
+          <input class="hx-input" type="email" name="contact[email]" placeholder="your@email.com" autocomplete="email" required aria-label="Email address">
+          <button type="submit" class="hx-submit">Subscribe</button>
+        </div>
+        {%- if form.posted_successfully? -%}<p class="hx-msg">You're in. Welcome to FLOW3R.</p>{%- endif -%}
+      {%- endform -%}
+      <div class="hx-trust">
+        <div>Discreet shipping</div>
+        <div>1-year guarantee</div>
+        <div>14-day returns</div>
+        <div>California fulfillment</div>
+      </div>
+      <p class="hx-fine">Adults 21+ only · Unsubscribe anytime</p>
+    </div>
+  </section>
+
+</div>

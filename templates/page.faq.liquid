@@ -1,0 +1,170 @@
+<div class="page-top">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">FAQ &amp; Policies</span></nav>
+  <div class="faq-header">
+    <h1>FAQ &amp; Policies</h1>
+    <p>Everything about ordering, shipping, returns, and warranties.</p>
+  </div>
+  <div class="faq-body">
+    <div class="faq-section-label" id="shipping">Shipping</div>
+    <div class="faq-grid">
+      <div class="faq-card"><div class="faq-q">When will my order ship?</div><div class="faq-a">Orders process in <strong>1&ndash;3 business days</strong> and ship from California via USPS Priority or UPS Ground. Delivery typically takes about 7 business days. You'll get a tracking number the moment it leaves our warehouse.</div></div>
+      <div class="faq-card"><div class="faq-q">Is packaging discreet?</div><div class="faq-a">Always. Every order ships in a plain outer box with <strong>no logos, no product descriptions, and no indication of contents.</strong></div></div>
+      <div class="faq-card"><div class="faq-q">Do you ship internationally?</div><div class="faq-a">Currently we ship to all 50 US states. International shipping is not available at this time.</div></div>
+      <div class="faq-card"><div class="faq-q">How much is shipping?</div><div class="faq-a"><strong>Free shipping on all orders over $75.</strong> Standard shipping on orders under $75 is calculated at checkout based on your location.</div></div>
+    </div>
+    <div class="faq-section-label" id="warranty">Returns &amp; Warranty</div>
+    <div class="faq-grid">
+      <div class="faq-card"><div class="faq-q">What's your return policy?</div><div class="faq-a">Returns accepted on <strong>unopened, unused items within 14 days</strong> of delivery. We can't accept used pieces for hygiene reasons. Return shipping is the customer's responsibility unless the item arrived damaged. Contact us with your order number to start a return.</div></div>
+      <div class="faq-card"><div class="faq-q">What does the 1-Year Guarantee cover?</div><div class="faq-a">Manufacturing defects, joint failures, and stress cracks under normal use. Doesn't cover drops. Email us with your order number and photos &mdash; <strong>we'll take care of you.</strong></div></div>
+      <div class="faq-card"><div class="faq-q">My item arrived damaged. What now?</div><div class="faq-a">Don't dispose of packaging. Photograph the box and the piece. Email us within 48 hours &mdash; <strong>we'll ship a replacement at no cost.</strong></div></div>
+      <div class="faq-card"><div class="faq-q">Can I exchange for a different product?</div><div class="faq-a">Yes, for unopened items in the 14-day return window. Reach out before returning so we can confirm availability.</div></div>
+    </div>
+    <div class="faq-section-label">Products &amp; Ordering</div>
+    <div class="faq-grid">
+      <div class="faq-card"><div class="faq-q">What is borosilicate glass?</div><div class="faq-a">Laboratory-grade glass known for thermal resistance and durability. <strong>Significantly stronger than regular glass</strong> and handles temperature changes without cracking. Chemically inert &mdash; it doesn't react with heat or leach chemicals.</div></div>
+      <div class="faq-card"><div class="faq-q">Are your products for tobacco use only?</div><div class="faq-a">All FLOW3R products are sold as <strong>tobacco smoking accessories</strong> for legal use in accordance with your local and state laws. By purchasing, you confirm you are 21+.</div></div>
+      <div class="faq-card"><div class="faq-q">How do I clean my piece?</div><div class="faq-a">Rinse with warm water after every session. For a deep clean, use 91%+ isopropyl alcohol and coarse salt &mdash; shake, soak, rinse. Check our <a href="/pages/glass-guide" style="color:var(--gdk);font-weight:600">Glass Guide</a> for full instructions.</div></div>
+      <div class="faq-card"><div class="faq-q">Do you have a rewards program?</div><div class="faq-a">Yes! Join free and earn 5 points per $1 spent. Redeem 100 points for $1 off any order. <a href="/pages/rewards" style="color:var(--gdk);font-weight:600">Learn more &rarr;</a></div></div>
+    </div>
+
+    <div class="faq-contact">
+      <div class="faq-contact-head">
+        <h3>Still have a question?</h3>
+        <p>Our team is California-based and responds to every message personally &mdash; usually within 24 hours. No bots.</p>
+      </div>
+      {%- form 'contact', id: 'faqContactForm' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="faq-form-success" id="faqSuccess">
+            <div class="faq-form-success-h">Message sent.</div>
+            <p class="faq-form-success-p">Thanks for reaching out &mdash; we'll get back to you within 24 hours, usually sooner. Check your inbox (and spam, just in case).</p>
+          </div>
+          <script>
+            document.addEventListener('DOMContentLoaded',function(){
+              var s=document.getElementById('faqSuccess');
+              if(s){s.scrollIntoView({behavior:'smooth',block:'center'});}
+            });
+          </script>
+        {%- else -%}
+          {%- if form.errors -%}
+            <div class="faq-form-errors">{{ form.errors | default_errors }}</div>
+          {%- endif -%}
+          <input type="hidden" name="contact[subject]" value="FAQ page — flow3r.shop">
+          <div class="faq-form">
+            <div class="faq-form-row">
+              <div class="faq-form-field">
+                <label for="faqName">Name</label>
+                <input type="text" id="faqName" name="contact[name]" autocomplete="name" required>
+              </div>
+              <div class="faq-form-field">
+                <label for="faqEmail">Email</label>
+                <input type="email" id="faqEmail" name="contact[email]" autocomplete="email" required>
+              </div>
+            </div>
+            <div class="faq-form-field">
+              <label for="faqOrder">Order number <span class="faq-form-opt">&mdash; optional, helps with returns &amp; warranty</span></label>
+              <input type="text" id="faqOrder" name="contact[Order number]" placeholder="#1234">
+            </div>
+            <div class="faq-form-field">
+              <label for="faqBody">Message</label>
+              <textarea id="faqBody" name="contact[body]" placeholder="What can we help with?" required></textarea>
+            </div>
+            <button type="submit" class="faq-form-btn">Send Message</button>
+          </div>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .faq-contact{
+    background:#245034;
+    border-radius:14px;
+    padding:40px 36px;
+    margin-top:48px;
+    color:#fff;
+  }
+  .faq-contact-head{ max-width:560px; margin-bottom:26px; }
+  .faq-contact-head h3{
+    font-size:24px;
+    font-weight:600;
+    color:#fff;
+    margin-bottom:8px;
+    letter-spacing:-0.01em;
+  }
+  .faq-contact-head p{
+    font-size:15px;
+    color:rgba(255,255,255,.75);
+    line-height:1.6;
+  }
+  .faq-form{ display:flex; flex-direction:column; gap:16px; }
+  .faq-form-row{ display:grid; grid-template-columns:1fr; gap:16px; }
+  .faq-form-field{ display:flex; flex-direction:column; gap:7px; }
+  .faq-form-field label{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.65);
+  }
+  .faq-form-opt{ color:rgba(255,255,255,.4); font-weight:500; letter-spacing:0; text-transform:none; }
+  .faq-form-field input,
+  .faq-form-field textarea{
+    font-family:inherit;
+    font-size:14px;
+    color:#0d0d0d;
+    background:#fff;
+    border:1.5px solid rgba(255,255,255,.2);
+    border-radius:4px;
+    padding:12px 14px;
+    width:100%;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .faq-form-field input::placeholder,
+  .faq-form-field textarea::placeholder{ color:#b3b3b0; }
+  .faq-form-field input:focus,
+  .faq-form-field textarea:focus{
+    outline:none;
+    border-color:#fff;
+    box-shadow:0 0 0 2px rgba(255,255,255,.18);
+  }
+  .faq-form-field textarea{ resize:vertical; min-height:130px; line-height:1.6; }
+  .faq-form-btn{
+    align-self:flex-start;
+    background:#fff;
+    color:#245034;
+    border:none;
+    border-radius:4px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.05em;
+    padding:15px 32px;
+    cursor:pointer;
+    transition:opacity .2s, transform .15s;
+  }
+  .faq-form-btn:hover{ opacity:.9; transform:translateY(-1px); }
+  .faq-form-success{
+    background:rgba(255,255,255,.1);
+    border:1.5px solid rgba(255,255,255,.25);
+    border-radius:6px;
+    padding:26px 24px;
+  }
+  .faq-form-success-h{ font-size:18px; font-weight:600; color:#fff; margin-bottom:8px; }
+  .faq-form-success-p{ font-size:14px; color:rgba(255,255,255,.8); line-height:1.6; }
+  .faq-form-errors{
+    background:rgba(255,255,255,.95);
+    border-radius:4px;
+    padding:13px 16px;
+    margin-bottom:4px;
+  }
+  .faq-form-errors ul{ margin:0; padding-left:18px; }
+  .faq-form-errors li{ font-size:13px; color:#b23b3b; line-height:1.5; }
+  @media (min-width:768px){
+    .faq-form-row{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:600px){
+    .faq-contact{ padding:32px 22px; }
+  }
+</style>

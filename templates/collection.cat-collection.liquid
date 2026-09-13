@@ -1,0 +1,234 @@
+{%- comment -%}collection.cat-collection.liquid — Flow3r Cat Collection{%- endcomment -%}
+
+<link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@300,400,500,600,700&display=swap" rel="stylesheet">
+<style>
+.cc-page*,.cc-page *::before,.cc-page *::after{box-sizing:border-box;margin:0;padding:0}
+.cc-page{font-family:'Neue Montreal',system-ui,sans-serif;color:#0d0d0d;background:#fff;--green:#245034;--muted:#555550;--r:4px}
+.f-ph{background:#1a1a1a;display:flex;align-items:center;justify-content:center;width:100%;height:100%;position:relative;overflow:hidden}
+.f-ph::after{content:attr(data-label);color:#444;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;position:absolute;bottom:14px;left:50%;transform:translateX(-50%);white-space:nowrap}
+.cc-hero{position:relative;height:88vh;min-height:500px;max-height:860px;overflow:hidden;background:#fff}
+.cc-icon-bar{background:#245034;display:flex;align-items:center;justify-content:center;padding:10px 0;}
+.cc-icon-bar img{width:32px;height:32px;display:block;}
+.cc-hero .f-ph{height:100%}
+.cc-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.12) 55%,transparent 100%);pointer-events:none}
+.cc-hero-content{position:absolute;top:50%;left:0;transform:translateY(-50%);padding:0 48px;color:#0d0d0d;display:flex;flex-direction:column;gap:14px;align-items:flex-start;width:50%}
+.cc-hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#555550}
+.cc-hero-title{font-size:clamp(34px,9vw,72px);font-weight:300;line-height:1;letter-spacing:-.025em;color:#0d0d0d}
+.cc-hero-title strong{font-weight:600}
+.cc-hero-sub{font-size:14px;color:#555550;max-width:340px;line-height:1.55}
+.cc-charity-pill{display:inline-flex;align-items:center;gap:8px;background:#245034;border:1px solid rgba(106,185,138,.4);border-radius:99px;padding:8px 16px;font-size:12px;font-weight:600;color:#fff;letter-spacing:.04em}
+.cc-charity-pill-mark{width:14px;height:14px;flex-shrink:0;display:block}
+.cc-statement{padding:60px 24px;background:#f6f5f2}
+.cc-statement-text{font-size:clamp(20px,4.5vw,36px);font-weight:300;line-height:1.25;letter-spacing:-.02em;max-width:720px}
+.cc-statement-text em{font-style:normal;font-weight:600}
+.cc-statement-note{margin-top:16px;font-size:13px;color:#555550}
+.cc-lifestyle{display:grid;grid-template-columns:1fr;gap:3px;background:#111}
+.cc-ls-slot{aspect-ratio:4/5;overflow:hidden}
+.cc-charity{background:#245034;padding:60px 24px;display:flex;flex-direction:column;gap:20px}
+.cc-charity-num{display:flex;align-items:center;justify-content:center}
+.cc-charity-mark{width:clamp(120px,22vw,180px);height:auto;display:block}
+.cc-charity-h{font-size:clamp(20px,4vw,28px);font-weight:600;color:#fff;letter-spacing:-.02em;line-height:1.2;max-width:500px}
+.cc-charity-p{font-size:15px;color:rgba(255,255,255,.65);line-height:1.8;max-width:480px}
+.cc-products{padding:60px 24px 80px;background:#fff}
+.cc-products-head{margin-bottom:40px}
+.cc-products-eyebrow{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#555550;margin-bottom:10px}
+.cc-products-h{font-size:clamp(24px,5vw,40px);font-weight:300;letter-spacing:-.02em}
+.cc-products-h em{font-style:normal;font-weight:600}
+.cc-grid{display:grid;grid-template-columns:1fr;gap:24px}
+.cc-card{border:1px solid rgba(0,0,0,.08);border-radius:6px;overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .2s;text-decoration:none;display:block;color:inherit}
+.cc-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.1);transform:translateY(-2px)}
+.cc-card-img{aspect-ratio:4/3;overflow:hidden;position:relative;background:#fff}
+.cc-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.cc-card:hover .cc-card-img img{transform:scale(1.03)}
+.cc-card-img-ov{position:absolute;inset:0;background:rgba(36,80,52,0);display:flex;align-items:center;justify-content:center;transition:background .25s}
+.cc-card:hover .cc-card-img-ov{background:rgba(36,80,52,.18)}
+.cc-card-img-ov span{background:#fff;color:#245034;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;border-radius:4px;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s}
+.cc-card:hover .cc-card-img-ov span{opacity:1;transform:translateY(0)}
+.cc-card-body{padding:20px 24px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.cc-card-info{display:flex;flex-direction:column;gap:4px}
+.cc-card-type{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#245034}
+.cc-card-name{font-size:17px;font-weight:500;letter-spacing:-.01em;color:#0d0d0d}
+.cc-card-price{font-size:18px;font-weight:600;color:#0d0d0d;white-space:nowrap;flex-shrink:0}
+.cc-empty{padding:72px 24px;text-align:center;background:#f6f5f2;border-radius:6px;border:1.5px dashed rgba(36,80,52,.2)}
+.cc-empty-h{font-size:18px;font-weight:600;color:#245034;margin-bottom:10px}
+.cc-empty-p{font-size:14px;color:#555550;line-height:1.65}
+.cc-trust{padding:40px 24px;background:#f6f5f2;border-top:1px solid rgba(0,0,0,.07);display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.cc-trust-item{display:flex;flex-direction:column;gap:4px}
+.cc-trust-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#245034}
+.cc-trust-val{font-size:13px;color:#555550;line-height:1.4}
+.cc-final{background:#245034;padding:80px 24px;text-align:center;color:#fff}
+.cc-final-h{font-size:clamp(28px,7vw,52px);font-weight:300;letter-spacing:-.025em;line-height:1.1;margin-bottom:10px}
+.cc-final-h strong{font-weight:600}
+.cc-final-sub{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:36px}
+.cc-back-top{display:inline-block;font-family:inherit;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.08em;text-decoration:none;cursor:pointer;border:none;background:transparent;transition:color .2s;padding:0}
+.cc-back-top:hover{color:rgba(255,255,255,.85)}
+
+@media(min-width:768px){
+  .cc-hero-content{padding:60px 60px 72px}
+  .cc-statement{padding:96px 60px}
+  .cc-lifestyle{grid-template-columns:1fr 1fr 1fr}
+  .cc-ls-slot{aspect-ratio:3/4}
+  .cc-charity{padding:80px 60px;flex-direction:row;align-items:center;gap:60px}
+  .cc-products{padding:80px 60px 100px}
+  .cc-grid{grid-template-columns:repeat(3,1fr);gap:20px}
+  .cc-trust{padding:48px 60px;grid-template-columns:repeat(4,1fr)}
+  .cc-final{padding:120px 60px}
+}
+/* ── HERO IMAGE ──────────────────────────────────────────── */
+.cc-hero-img {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  height: 85%;
+  width: auto;
+  max-width: 58%;
+  object-fit: contain;
+  object-position: center right;
+  pointer-events: none;
+  display: block;
+}
+.cc-hero-card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  backdrop-filter: none;
+}
+@media (max-width: 767px) {
+  .cc-hero {
+    height: auto;
+    min-height: unset;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+  }
+  .cc-hero-img {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
+    object-fit: contain;
+    object-position: center;
+    opacity: 1;
+    display: block;
+  }
+  .cc-hero-content {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    padding: 32px 24px 40px;
+  }
+  .cc-hero-card { max-width: 100%; }
+}
+</style>
+
+<div class="cc-page">
+
+  <!-- HERO -->
+  <section class="cc-hero">
+    <img
+      class="cc-hero-img"
+      src="{{ 'HEMPER_ALLEY_CATS_GLASS_FAMILY_WITHBOX_001_TRANSPARENT.png' | asset_url }}"
+      alt="Alley Cats Collection — Bong, XL Bong, and Hand Pipe"
+      loading="eager"
+      width="900">
+    <div class="cc-hero-content">
+      <div class="cc-hero-card">
+        <div class="cc-hero-eyebrow">The Cat Collection — Alley Cats by Hemper</div>
+        <h1 class="cc-hero-title">The <strong>Cat</strong><br>Collection.</h1>
+        <p class="cc-hero-sub">Cat-themed glass that actually looks good. Premium borosilicate. Three pieces. One cause.</p>
+        <div class="cc-charity-pill"><img src="{{ 'Cat_Fam_White.svg' | asset_url }}" alt="" aria-hidden="true" class="cc-charity-pill-mark">A portion of every purchase supports cat rescue</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cc-icon-bar">
+    <img src="{{ 'flaviconfinal.png' | asset_url }}" alt="" aria-hidden="true" width="32" height="32">
+  </div>
+
+  <!-- PRODUCTS -->
+  <section class="cc-products" id="cc-products">
+    <div class="cc-products-head">
+      <div class="cc-products-eyebrow">The Cat Collection</div>
+      <h2 class="cc-products-h">Three pieces.<br><em>One collection.</em></h2>
+    </div>
+
+    {%- if collection.products.size > 0 -%}
+      <div class="cc-grid">
+        {%- for product in collection.products -%}
+          {%- assign fv = product.selected_or_first_available_variant -%}
+          <a href="{{ product.url }}" class="cc-card">
+            <div class="cc-card-img">
+              {%- if product.featured_image -%}
+                <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" width="600" loading="lazy">
+              {%- else -%}
+                <div class="f-ph" style="height:100%;min-height:260px" data-label="{{ product.title | escape }}"></div>
+              {%- endif -%}
+              <div class="cc-card-img-ov"><span>Shop Now</span></div>
+            </div>
+            <div class="cc-card-body">
+              <div class="cc-card-info">
+                <div class="cc-card-type">{{ product.type }}</div>
+                <div class="cc-card-name">{{ product.title }}</div>
+              </div>
+              <div class="cc-card-price">{{ fv.price | money }}</div>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="cc-empty">
+        <div class="cc-empty-h">Collection dropping soon.</div>
+        <p class="cc-empty-p">Follow <a href="https://instagram.com/flow3r.glass" style="color:#245034;font-weight:600;">@flow3r.glass</a> for the drop.</p>
+      </div>
+    {%- endif -%}
+  </section>
+
+  <!-- STATEMENT -->
+  <section class="cc-statement">
+    <p class="cc-statement-text">Cat people know.<br>Good glass <em>and</em> a good cause<br>should not be a compromise.</p>
+    <p class="cc-statement-note">Alley Cats by Hemper — Premium borosilicate only</p>
+  </section>
+
+  <!-- LIFESTYLE GRID -->
+<div class="cc-lifestyle">
+    <div class="cc-ls-slot"><img src="{{ 'cat_hand_pipe_marble_counter_top.jpg' | asset_url }}" alt="Alley Cats Hand Pipe on marble" loading="lazy" width="800" height="1000" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="cc-ls-slot"><img src="{{ 'wheatcatbongregularhemper.jpg' | asset_url }}" alt="Alley Cats Bong wheat background" loading="lazy" width="800" height="1000" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+    <div class="cc-ls-slot"><img src="{{ 'side_view_xl_bong.jpg' | asset_url }}" alt="Alley Cats XL Bong side view" loading="lazy" width="800" height="1000" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+  </div>
+
+  <!-- CHARITY -->
+  <section class="cc-charity">
+    <div class="cc-charity-num"><img src="{{ 'Cat_Fam_White.svg' | asset_url }}" alt="Cat Fam" class="cc-charity-mark"></div>
+    <div>
+      <h2 class="cc-charity-h">Every Cat Collection purchase supports California cat rescue.</h2>
+      <p class="cc-charity-p">A portion of every Cat Collection sale is donated to local California cat rescue. You buy a cat piece — real cats get help finding homes. That's it.</p>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <div class="cc-trust">
+    <div class="cc-trust-item"><div class="cc-trust-label">1-Year Guarantee</div><div class="cc-trust-val">Manufacturing defects covered. No forms.</div></div>
+    <div class="cc-trust-item"><div class="cc-trust-label">Discreet Shipping</div><div class="cc-trust-val">Plain, unbranded box. Always.</div></div>
+    <div class="cc-trust-item"><div class="cc-trust-label">Borosilicate Only</div><div class="cc-trust-val">Same glass standard as everything we carry.</div></div>
+    <div class="cc-trust-item"><div class="cc-trust-label">Supports Rescue</div><div class="cc-trust-val">A portion of every Cat Collection sale. Local California cats.</div></div>
+  </div>
+
+  <!-- FINAL -->
+  <section class="cc-final">
+    <h2 class="cc-final-h">Good glass.<br><strong>Good cause.</strong></h2>
+    <p class="cc-final-sub">Premium borosilicate — cat-themed — supports CA cat rescue — ships discreet</p>
+    <button class="cc-back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Back to top</button>
+  </section>
+
+</div>
