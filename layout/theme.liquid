@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#245034">
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- else -%}
+    <meta name="description" content="Premium functional glass. Water pipes, cat-themed pieces, and accessories — California-based, 1-year guarantee, discreet plain packaging.">
+  {%- endif -%}
+
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ page_title }} — {{ shop.name }}">
+  <meta property="og:type" content="website">
+  {%- if page_description -%}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {%- if page_image -%}
+    <meta property="og:image" content="{{ page_image | image_url: width: 1200 }}">
+    <meta property="og:image:width" content="1200">
+  {%- endif -%}
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title }}">
+  {%- if page_description -%}
+    <meta name="twitter:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {%- if page_image -%}
+    <meta name="twitter:image" content="{{ page_image | image_url: width: 1200 }}">
+  {%- endif -%}
+
+  <title>{{ page_title }}{%- unless page_title contains shop.name %} — {{ shop.name }}{%- endunless -%}</title>
+
+<link rel="icon" type="image/png" href="{{ 'flaviconfinal.png' | asset_url }}">
+
+  {{ content_for_header }}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@300,400,500,600,700&display=swap" rel="stylesheet">
+  {{ 'flow3r.css' | asset_url | stylesheet_tag }}
+  {{ 'flow3r-nav.css' | asset_url | stylesheet_tag }}
+  {{ 'flow3r-clean.css' | asset_url | stylesheet_tag }}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ shop.name | escape }}",
+    "url": "{{ shop.url }}",
+    "description": "Premium functional glass for adults who want cleaner, smoother sessions. California-based.",
+    "logo": "{{ 'flaviconfinal.png' | asset_url }}",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@flow3r.shop",
+      "contactType": "customer service"
+    },
+    "sameAs": [
+      "https://instagram.com/flow3r.glass",
+      "https://tiktok.com/@flow3r.shop"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "CA",
+      "addressCountry": "US"
+    }
+  }
+  </script>
+</head>
+
+<body class="lock">
+
+  <!-- ═══ AGE GATE ═══ -->
+  {%- if settings.age_gate_enabled -%}
+  <div id="age-gate" class="age-gate" style="display:none">
+    <div class="age-gate-inner">
+      <div class="age-gate-logo">
+        <img src="{{ 'flaviconfinal.png' | asset_url }}" alt="FLOW3R" class="age-gate-logo-img">
+      </div>
+      <div class="age-gate-rule"></div>
+      <h2 class="age-gate-heading">You must be {{ settings.age_gate_minimum }}+ to enter.</h2>
+      <p class="age-gate-sub">This site sells products intended for adults only.</p>
+      <div class="age-gate-btns">
+        <button class="age-gate-enter" onclick="ageGateEnter()">I am {{ settings.age_gate_minimum }}+</button>
+        <button class="age-gate-exit" onclick="ageGateExit()">I am under {{ settings.age_gate_minimum }}</button>
+      </div>
+      <p class="age-gate-legal">By entering you confirm you are of legal age in your jurisdiction.</p>
+    </div>
+  </div>
+  {%- endif -%}
+
+  <!-- ═══ ANNOUNCEMENT BAR — calm crossfade ═══ -->
+  <div class="f-annbar" aria-label="Site announcements">
+    <div class="f-annbar-rail">
+      <span class="f-annbar-line">Free shipping over $75</span>
+      <span class="f-annbar-line">Borosilicate glass only</span>
+      <span class="f-annbar-line">Discreet plain packaging</span>
+      <span class="f-annbar-line">1-Year guarantee</span>
+      <span class="f-annbar-line">
+        <span class="f-ann-desktop">A portion of Cat Collection sales is donated to California cat rescue</span>
+        <span class="f-ann-mobile">A portion of sales supports cat rescue</span>
+      </span>
+    </div>
+  </div>
+ <style>
+    .f-annbar{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:300;
+      min-height:var(--ann);
+      background:#245034;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .f-annbar-rail{
+      position:relative;
+      width:100%;
+    }
+    .f-annbar-line{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      min-height:var(--ann);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:4px 16px;
+      font-size:11px;
+      font-weight:500;
+      letter-spacing:.12em;
+      line-height:1.3;
+      text-transform:uppercase;
+      opacity:0;
+      animation:fAnnFade 25s infinite;
+    }
+    .f-annbar-line:nth-child(1){position:relative;animation-delay:0s}
+    .f-annbar-line:nth-child(2){animation-delay:5s}
+    .f-annbar-line:nth-child(3){animation-delay:10s}
+    .f-annbar-line:nth-child(4){animation-delay:15s}
+    .f-annbar-line:nth-child(5){animation-delay:20s}
+    @keyframes fAnnFade{
+      0%{opacity:0}
+      2%{opacity:1}
+      18%{opacity:1}
+      20%{opacity:0}
+      100%{opacity:0}
+    }
+    .f-ann-mobile{ display:none; }
+    .f-ann-desktop{ display:inline; }
+    @media (max-width:600px){
+      .f-annbar-line{ font-size:10px; letter-spacing:.06em; }
+      .f-ann-desktop{ display:none; }
+      .f-ann-mobile{ display:inline; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .f-annbar-line{animation:none;opacity:0}
+      .f-annbar-line:nth-child(1){opacity:1;position:relative}
+    }
+  </style>
+
+  <!-- ═══ HEADER / NAV ═══ -->
+  <header class="site-header" role="banner">
+    <button id="mob-menu-btn" onclick="toggleMobileNav()" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    <a href="/" class="nav-logo" aria-label="{{ shop.name }} home">
+     <img src="{{ 'flaviconfinal.png' | asset_url }}" alt="FLOW3R" class="nav-logo-img" style="width:auto;display:block">
+      <span class="nav-logo-text">FLOW<span>3</span>R</span>
+    </a>
+
+    <nav class="nav-mid" role="navigation" aria-label="Main navigation">
+  {%- assign is_learn = false -%}
+  {%- if request.path contains '/blogs/the-learning-hub' or request.path contains '/pages/glass-guide' -%}
+    {%- assign is_learn = true -%}
+  {%- endif -%}
+  <a href="/pages/shop" class="nav-link{% if request.path contains '/pages/shop' %} nav-link--active{% endif %}">Shop</a>
+  <a href="/blogs/the-learning-hub" class="nav-link{% if is_learn %} nav-link--active{% endif %}">Learn</a>
+  <a href="/pages/cat-fam" class="nav-link{% if request.path contains '/pages/cat-fam' %} nav-link--active{% endif %}"><svg class="nav-paw" width="13" height="13" viewBox="0 0 50 50" fill="none" aria-hidden="true"><ellipse cx="10" cy="19" rx="3.8" ry="4.8" fill="currentColor"/><ellipse cx="19" cy="13" rx="4.2" ry="5.2" fill="currentColor"/><ellipse cx="31" cy="13" rx="4.2" ry="5.2" fill="currentColor"/><ellipse cx="40" cy="19" rx="3.8" ry="4.8" fill="currentColor"/><path d="M11,35 C11,27 16,24 21,24 C23,24 24.5,24.5 25,24.5 C25.5,24.5 27,24 29,24 C34,24 39,27 39,35 C39,42 33,47 25,47 C17,47 11,42 11,35Z" fill="currentColor"/></svg>Cat Fam</a>
+  <a href="/pages/about" class="nav-link{% if request.path contains '/pages/about' %} nav-link--active{% endif %}">About</a>
+</nav>
+
+    <div class="nav-right">
+      <button class="nav-icon" onclick="openSearch()" aria-label="Search">
+        <svg width="19" height="19" viewBox="0 0 19 19" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.6"/><line x1="12" y1="12" x2="17" y2="17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <a href="/account" class="nav-icon" aria-label="Account">
+        <svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </a>
+      <div class="nav-div"></div>
+      <button class="nav-icon" onclick="toggleCart()" aria-label="Cart">
+        <svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 3h2l2.5 9h8l2-6H6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="16" r="1.5" fill="currentColor"/><circle cx="15" cy="16" r="1.5" fill="currentColor"/></svg>
+        <div class="bdg" id="cart-badge">0</div>
+      </button>
+      <a href="/pages/shop" class="nav-cta">Shop Now</a>
+    </div>
+  </header>
+  <!-- ═══ MOBILE DRAWER ═══ -->
+  <nav id="mob-drawer" aria-label="Mobile navigation">
+    <a href="/pages/shop" class="mob-nav-link" onclick="closeMobileNav()">Shop</a>
+    <a href="/blogs/the-learning-hub" class="mob-nav-link" onclick="closeMobileNav()">Learn</a>
+    <a href="/pages/cat-fam" class="mob-nav-link" onclick="closeMobileNav()"><svg class="nav-paw" width="18" height="18" viewBox="0 0 50 50" fill="none" aria-hidden="true"><ellipse cx="10" cy="19" rx="3.8" ry="4.8" fill="currentColor"/><ellipse cx="19" cy="13" rx="4.2" ry="5.2" fill="currentColor"/><ellipse cx="31" cy="13" rx="4.2" ry="5.2" fill="currentColor"/><ellipse cx="40" cy="19" rx="3.8" ry="4.8" fill="currentColor"/><path d="M11,35 C11,27 16,24 21,24 C23,24 24.5,24.5 25,24.5 C25.5,24.5 27,24 29,24 C34,24 39,27 39,35 C39,42 33,47 25,47 C17,47 11,42 11,35Z" fill="currentColor"/></svg>Cat Fam</a>
+    <a href="/pages/about" class="mob-nav-link" onclick="closeMobileNav()">About</a>
+    <div class="mob-drawer-cta">
+      <a href="/pages/shop" onclick="closeMobileNav()">Shop Now →</a>
+    </div>
+  </nav>
+
+  <!-- ═══ SEARCH OVERLAY ═══ -->
+  <div id="search-overlay" class="search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-box">
+      <form action="/search" method="get" class="search-form">
+        <input type="hidden" name="type" value="product">
+        <input class="search-input" type="search" name="q" id="search-input" placeholder="Search products…" autocomplete="off" aria-label="Search">
+        <button type="button" class="search-close" onclick="closeSearch()" aria-label="Close search">✕</button>
+      </form>
+      <div class="search-hint">Try "water pipe", "grinder", "cat collection"…</div>
+    </div>
+  </div>
+
+  <!-- ═══ CART DRAWER ═══ -->
+  <div id="cart-overlay" class="cart-overlay" onclick="closeCart()" aria-hidden="true"></div>
+  <div id="cart-panel" class="cart-panel" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div class="cart-head">
+      <h3>Your Cart <span id="cart-count-label" style="color:#999;font-weight:400;font-size:15px">(0)</span></h3>
+      <button class="cart-close" onclick="closeCart()" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-body" id="cart-items-list">
+      <div class="cart-empty">
+        <p>Your cart is empty.</p>
+        <a href="/pages/shop" class="btn btn-dk" onclick="closeCart()">Continue Shopping</a>
+      </div>
+    </div>
+    <div class="cart-foot" id="cart-footer" style="display:none">
+      <div class="cart-subtotal-row">
+        <span class="cart-subtotal-label">Subtotal</span>
+        <span class="cart-subtotal-val" id="cart-total">$0</span>
+      </div>
+      <a href="/cart" class="cart-checkout-btn">View Cart →</a>
+      <button class="cart-continue-btn" onclick="closeCart()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer" role="contentinfo">
+
+    {%- if template.name != 'index' and template.suffix != 'shop' -%}
+    <!-- ═══ FOOTER EMAIL SIGNUP (hidden on homepage) ═══ -->
+    <section class="footer-signup" aria-label="Email signup">
+      <div class="footer-signup-inner">
+        <div class="footer-signup-text">
+          <h3 class="footer-signup-h">Stay in the loop.</h3>
+          <p class="footer-signup-p">Drops, early access, glass culture. No spam, ever.</p>
+        </div>
+        {%- form 'customer', id: 'footer-newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter,footer">
+          <input type="hidden" name="contact[accepts_marketing]" value="true">
+          <div class="footer-signup-form">
+            <input class="footer-signup-input" type="email" name="contact[email]" placeholder="your@email.com" autocomplete="email" required aria-label="Email address">
+            <button type="submit" class="footer-signup-submit">Subscribe</button>
+          </div>
+          {%- if form.posted_successfully? -%}
+            <p class="footer-signup-success">You're in. Welcome to FLOW3R.</p>
+          {%- endif -%}
+        {%- endform -%}
+        <p class="footer-signup-note">Adults 21+ only · Unsubscribe anytime</p>
+      </div>
+    </section>
+    <style>
+      .footer-signup{
+        padding:40px 0 36px;
+        margin-bottom:40px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+      }
+      .footer-signup-inner{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:48px;
+        flex-wrap:wrap;
+      }
+      .footer-signup-text{
+        flex:1 1 320px;
+        min-width:260px;
+      }
+      .footer-signup-h{
+        font-family:'Neue Montreal',sans-serif;
+        font-size:24px;
+        font-weight:500;
+        letter-spacing:-.02em;
+        line-height:1.15;
+        color:#fff;
+        margin:0 0 8px;
+      }
+      .footer-signup-p{
+        font-size:14px;
+        color:rgba(232,245,237,.7);
+        line-height:1.5;
+        margin:0;
+        max-width:380px;
+      }
+      .footer-signup-form{
+        display:flex;
+        gap:8px;
+        flex:1 1 360px;
+        max-width:440px;
+        min-width:260px;
+      }
+      .footer-signup-input{
+        flex:1;
+        padding:13px 16px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.18);
+        border-radius:3px;
+        color:#fff;
+        font-family:'Neue Montreal',sans-serif;
+        font-size:14px;
+        outline:none;
+        transition:border-color .2s;
+      }
+      .footer-signup-input::placeholder{
+        color:rgba(255,255,255,.4);
+      }
+      .footer-signup-input:focus{
+        border-color:rgba(255,255,255,.5);
+      }
+      .footer-signup-submit{
+        padding:13px 22px;
+        background:#fff;
+        color:#245034;
+        border:none;
+        border-radius:3px;
+        font-family:'Neue Montreal',sans-serif;
+        font-size:12px;
+        font-weight:600;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+        cursor:pointer;
+        transition:background .2s;
+        white-space:nowrap;
+      }
+      .footer-signup-submit:hover{
+        background:rgba(255,255,255,.88);
+      }
+      .footer-signup-success{
+        margin-top:12px;
+        font-size:13px;
+        color:#e8f5ed;
+        font-weight:500;
+      }
+      .footer-signup-note{
+        width:100%;
+        margin:16px 0 0;
+        font-size:11px;
+        color:rgba(232,245,237,.4);
+        letter-spacing:.04em;
+      }
+      @media (max-width:680px){
+        .footer-signup{
+          padding:32px 0 28px;
+          margin-bottom:32px;
+        }
+        .footer-signup-inner{
+          gap:20px;
+        }
+        .footer-signup-h{
+          font-size:22px;
+        }
+        .footer-signup-form{
+          width:100%;
+          max-width:none;
+          flex-direction:column;
+          gap:10px;
+        }
+        .footer-signup-submit{
+          width:100%;
+          padding:14px;
+        }
+      }
+    </style>
+    {%- endif -%}
+
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">FLOW<span>3</span>R</div>
+        <p class="footer-brand-p">Premium functional glass. Cleaner, smoother sessions for adults who know the difference.</p>
+        <div style="display:flex;gap:14px;margin-top:16px">
+          <a href="https://instagram.com/flow3r.glass" target="_blank" rel="noopener" class="footer-social-link">Instagram</a>
+          <a href="https://tiktok.com/@flow3r.shop" target="_blank" rel="noopener" class="footer-social-link">TikTok</a>
+        </div>
+      </div>
+<div class="footer-col">
+        <div class="footer-col-h">Shop</div>
+        <a href="/pages/shop">Shop All</a>
+        <a href="/products/8-flow3r-water-pipe">Water Pipe</a>
+        <a href="/collections/cat-collection">Cat Collection</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-h">Explore</div>
+        <a href="/pages/glass-guide">Glass Guide</a>
+        <a href="/pages/cat-fam">Cat Fam</a>
+        <a href="/pages/about">About</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-h">Support</div>
+        <a href="/pages/faq">FAQ &amp; Policies</a>
+        <a href="/pages/faq#shipping">Shipping &amp; Returns</a>
+        <a href="/pages/faq#warranty">Warranty</a>
+        <a href="/pages/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+  <div class="footer-col-h">Blog</div>
+  <a href="/blogs/the-learning-hub">All Posts</a>
+  <a href="/blogs/the-learning-hub/tagged/glass-care">Glass Care</a>
+  <a href="/blogs/the-learning-hub/tagged/california-glass">California Glass</a>
+  <a href="/blogs/the-learning-hub/tagged/cat-fam">Cat Fam</a>
+</div>
+    </div>
+    <div class="footer-legal">
+      <a href="/policies/privacy-policy">Privacy Policy</a>
+      <a href="/policies/terms-of-service">Terms of Service</a>
+      <a href="/policies/refund-policy">Refund Policy</a>
+      <a href="/policies/shipping-policy">Shipping Policy</a>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</div>
+      <div class="footer-21">Adults 21+ Only</div>
+    </div>
+    <style>
+      .footer-legal{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px 22px;
+        padding:20px 0 4px;
+      }
+      .footer-legal a{
+        font-size:12px;
+        color:rgba(200,220,210,.4);
+        text-decoration:none;
+        letter-spacing:.01em;
+      }
+      .footer-legal a:hover{ color:rgba(232,245,237,.8); }
+    </style>
+  </footer>
+
+  <script src="{{ 'flow3r.js' | asset_url }}" defer></script>
+
+</body>
+</html>
