@@ -1,0 +1,140 @@
+{% schema %}
+{
+  "name": "Rewards Page",
+  "settings": [],
+  "presets": [{ "name": "Rewards Page" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">Rewards</span></nav>
+
+  <!-- HERO -->
+  <div class="rw-hero">
+    <div class="rw-hero-eyebrow">
+      <img src="{{ 'flaviconfinal.png' | asset_url }}" class="logo-accent rw-logo-accent" alt="" aria-hidden="true">
+      FLOW3R Rewards
+    </div>
+    <h1 class="rw-hero-h">Earn with every order.</h1>
+    <p class="rw-hero-sub">Points on every purchase. Double on Cat Collection. Three tiers — each one better than the last.</p>
+    <a href="/account/register" class="rw-hero-btn">Join Free — Start Earning</a>
+  </div>
+
+  <!-- HOW TO EARN -->
+  <div class="rw-earn">
+    <div class="rw-section-label">
+      <span class="rw-section-tag">How it works</span>
+      <h2 class="rw-section-h">Ways to earn points</h2>
+    </div>
+    <div class="rw-earn-grid">
+      <div class="rw-earn-card">
+        <div class="rw-earn-num">5 pts</div>
+        <div class="rw-earn-per">per $1 spent</div>
+        <h3 class="rw-earn-title">Every Purchase</h3>
+        <p class="rw-earn-desc">Points credited automatically after your order ships. No tracking needed.</p>
+      </div>
+      <div class="rw-earn-card rw-earn-card--accent">
+        <div class="rw-earn-num">10 pts</div>
+        <div class="rw-earn-per">per $1 spent</div>
+        <h3 class="rw-earn-title">Cat Collection</h3>
+        <p class="rw-earn-desc">Double points on every Cat Collection item — and you're supporting local shelters.</p>
+      </div>
+      <div class="rw-earn-card">
+        <div class="rw-earn-num">25 pts</div>
+        <div class="rw-earn-per">per review</div>
+        <h3 class="rw-earn-title">Write a Review</h3>
+        <p class="rw-earn-desc">Verified review earns 25 pts. Add photos and earn 50. Your words help the community.</p>
+      </div>
+      <div class="rw-earn-card">
+        <div class="rw-earn-num">15%</div>
+        <div class="rw-earn-per">off for both</div>
+        <h3 class="rw-earn-title">Refer a Friend</h3>
+        <p class="rw-earn-desc">Friend places a $45+ order, you both get 15% off your next purchase. No cap.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIERS -->
+  <div class="rw-tiers">
+    <div class="rw-section-label rw-section-label--light">
+      <span class="rw-section-tag rw-section-tag--light">Member tiers</span>
+      <h2 class="rw-section-h rw-section-h--light">The higher you go,<br>the better it gets.</h2>
+    </div>
+    <div class="rw-tiers-grid">
+
+      <div class="rw-tier">
+        <div class="rw-tier-top">
+          <div class="rw-tier-icon">🌱</div>
+          <div class="rw-tier-name">Seedling</div>
+          <div class="rw-tier-pts">0 – 499 pts</div>
+        </div>
+        <ul class="rw-tier-perks">
+          <li>Early access to new drops</li>
+          <li>Birthday discount</li>
+          <li>Member-only email deals</li>
+        </ul>
+        <a href="/account/register" class="rw-tier-cta">Get started →</a>
+      </div>
+
+      <div class="rw-tier rw-tier--mid">
+        <div class="rw-tier-top">
+          <div class="rw-tier-icon">🌿</div>
+          <div class="rw-tier-name">Sapling</div>
+          <div class="rw-tier-pts">500 – 1,499 pts</div>
+        </div>
+        <ul class="rw-tier-perks">
+          <li>Everything in Seedling</li>
+          <li>Free shipping on all orders</li>
+          <li>10% off every 3rd purchase</li>
+          <li>First access to limited drops</li>
+        </ul>
+        <a href="/account/register" class="rw-tier-cta">Start earning →</a>
+      </div>
+
+      <div class="rw-tier rw-tier--top">
+        <div class="rw-tier-badge">Top tier</div>
+        <div class="rw-tier-top">
+          <div class="rw-tier-icon">🌸</div>
+          <div class="rw-tier-name">FLOW3R</div>
+          <div class="rw-tier-pts">1,500+ pts</div>
+        </div>
+        <ul class="rw-tier-perks">
+          <li>Everything in Sapling</li>
+          <li>15% off every order</li>
+          <li>Free priority shipping</li>
+          <li>Exclusive FLOW3R-only drops</li>
+          <li>Direct line to our team</li>
+        </ul>
+        <a href="/account/register" class="rw-tier-cta rw-tier-cta--top">Reach the top →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REFERRAL -->
+  <div class="rw-ref">
+    <div class="rw-ref-inner">
+      <div class="rw-ref-left">
+        <div class="rw-ref-eyebrow">Referral Program</div>
+        <h2 class="rw-ref-h">Share FLOW3R.<br>Both of you save.</h2>
+        <p class="rw-ref-p">Your friend places a $45+ first order, you both automatically get <strong>15% off</strong> your next purchase. No limit on referrals.</p>
+        <a href="/account/register" class="btn btn-ol rw-ref-btn">Get your referral link →</a>
+      </div>
+      <div class="rw-ref-steps">
+        <div class="rw-ref-step">
+          <div class="rw-ref-num">01</div>
+          <div class="rw-ref-text">Sign up and get your unique referral link</div>
+        </div>
+        <div class="rw-ref-step">
+          <div class="rw-ref-num">02</div>
+          <div class="rw-ref-text">Share it — your friend clicks and shops FLOW3R</div>
+        </div>
+        <div class="rw-ref-step">
+          <div class="rw-ref-num">03</div>
+          <div class="rw-ref-text">They order over $45 — you both get 15% off</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

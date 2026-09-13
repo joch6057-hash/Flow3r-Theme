@@ -1,0 +1,223 @@
+{{ 'learn-hub.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%} ── HERO ── {%- endcomment -%}
+<section class="lh-hero">
+  {%- if section.settings.hero_video_url != blank -%}
+    <video
+      class="lh-hero__bg--video"
+      src="{{ section.settings.hero_video_url }}"
+      autoplay muted loop playsinline
+      aria-hidden="true"
+    ></video>
+    <div class="lh-hero__overlay"></div>
+  {%- elsif section.settings.hero_image != blank -%}
+    <img
+      class="lh-hero__bg"
+      src="{{ section.settings.hero_image | image_url: width: 2000 }}"
+      alt=""
+      aria-hidden="true"
+      loading="eager"
+    >
+    <div class="lh-hero__overlay"></div>
+  {%- endif -%}
+
+  <div class="lh-hero__inner">
+    <p class="lh-hero__eyebrow">Flow3r</p>
+    <h1 class="lh-hero__title">{{ section.settings.hero_title | default: 'The Learning Hub' }}</h1>
+    <p class="lh-hero__sub">{{ section.settings.hero_subtitle | default: 'Glass, culture, and everything in between.' }}</p>
+  </div>
+</section>
+
+{%- comment -%} ── GLASS GUIDE FEATURED BANNER ── {%- endcomment -%}
+<section class="lh-featured">
+  <div class="lh-featured__inner">
+    <a href="{{ section.settings.featured_url | default: '/pages/learn' }}" class="lh-featured__link">
+      <span class="lh-featured__badge">Essential Read</span>
+      <p class="lh-featured__eyebrow">{{ section.settings.featured_eyebrow | default: 'The Glass Guide' }}</p>
+      <h2 class="lh-featured__title">{{ section.settings.featured_title | default: 'Everything you need to know about glass.' }}</h2>
+      <p class="lh-featured__sub">{{ section.settings.featured_sub | default: 'How it works, what each piece does, and why the material matters for a cleaner, smoother session.' }}</p>
+      <span class="lh-featured__cta">Read the Guide →</span>
+    </a>
+  </div>
+</section>
+
+{%- comment -%} ── CATEGORY FILTER ── {%- endcomment -%}
+{%- assign all_tag_keys = '' -%}
+{%- assign all_tag_labels = '' -%}
+
+{%- for article in blog.articles limit: 50 -%}
+  {%- for tag in article.tags -%}
+    {%- assign tag_key = tag | handleize -%}
+    {%- unless all_tag_keys contains tag_key -%}
+      {%- assign all_tag_keys = all_tag_keys | append: tag_key | append: '|||' -%}
+      {%- assign all_tag_labels = all_tag_labels | append: tag | append: '|||' -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+{%- assign tag_keys_array = all_tag_keys | split: '|||' -%}
+{%- assign tag_labels_array = all_tag_labels | split: '|||' -%}
+
+<section class="lh-filter">
+  <div class="lh-filter__inner">
+    <button class="lh-filter__pill lh-filter__pill--active" data-tag="all" aria-pressed="true">All</button>
+
+    {%- for key in tag_keys_array -%}
+      {%- if key != blank -%}
+        <button class="lh-filter__pill" data-tag="{{ key }}" aria-pressed="false">
+          {{ tag_labels_array[forloop.index0] }}
+        </button>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <span class="lh-filter__count" id="lh-count">{{ blog.articles_count }} {{ blog.articles_count | pluralize: 'article', 'articles' }}</span>
+  </div>
+</section>
+
+{%- comment -%} ── ARTICLE GRID ── {%- endcomment -%}
+<section class="lh-grid">
+  <div class="lh-grid__inner" id="lh-grid">
+    {%- if blog.articles_count > 0 -%}
+      {%- for article in blog.articles -%}
+        {%- assign word_count = article.content | strip_html | split: ' ' | size -%}
+        {%- assign read_time = word_count | divided_by: 200 | plus: 1 -%}
+        {%- assign card_tag_keys = '' -%}
+        {%- for tag in article.tags -%}
+          {%- assign card_tag_keys = card_tag_keys | append: tag | handleize | append: ' ' -%}
+        {%- endfor -%}
+
+        <a href="{{ article.url }}" class="lh-card" data-tags="{{ card_tag_keys | strip }}">
+          <div class="lh-card__img">
+            {%- if article.image -%}
+              <img
+                src="{{ article.image | image_url: width: 800 }}"
+                alt="{{ article.image.alt | default: article.title | escape }}"
+                loading="lazy" width="800" height="500"
+              >
+            {%- else -%}
+              <div class="lh-card__img-placeholder">
+                <span>{{ article.tags.first | default: 'Flow3r' }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="lh-card__body">
+            {%- if article.tags.first -%}
+              <p class="lh-card__tag">{{ article.tags.first }}</p>
+            {%- endif -%}
+            <h2 class="lh-card__title">{{ article.title }}</h2>
+            {%- if article.excerpt != blank -%}
+              <p class="lh-card__excerpt">{{ article.excerpt | strip_html | truncate: 115 }}</p>
+            {%- else -%}
+              <p class="lh-card__excerpt">{{ article.content | strip_html | truncate: 115 }}</p>
+            {%- endif -%}
+            <div class="lh-card__meta">
+              <span class="lh-card__read-time">{{ read_time }} min read</span>
+              <span class="lh-card__arrow">Read →</span>
+            </div>
+          </div>
+        </a>
+      {%- endfor -%}
+    {%- else -%}
+      <p class="lh-empty">Articles coming soon.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  var pills = document.querySelectorAll('.lh-filter__pill');
+  var cards = document.querySelectorAll('#lh-grid .lh-card');
+  var count = document.getElementById('lh-count');
+
+  function filterCards(activeTag) {
+    var visible = 0;
+    cards.forEach(function (card) {
+      var tags = (card.dataset.tags || '').split(' ').filter(Boolean);
+      var show = activeTag === 'all' || tags.indexOf(activeTag) !== -1;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (count) count.textContent = visible + (visible === 1 ? ' article' : ' articles');
+  }
+
+  pills.forEach(function (pill) {
+    pill.addEventListener('click', function () {
+      var tag = this.dataset.tag;
+      pills.forEach(function (p) {
+        p.classList.remove('lh-filter__pill--active');
+        p.setAttribute('aria-pressed', 'false');
+      });
+      this.classList.add('lh-filter__pill--active');
+      this.setAttribute('aria-pressed', 'true');
+      filterCards(tag);
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Learning Hub Index",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Hero title",
+      "default": "The Learning Hub"
+    },
+    {
+      "type": "text",
+      "id": "hero_subtitle",
+      "label": "Hero subtitle",
+      "default": "Glass, culture, and everything in between."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero background image (optional)"
+    },
+    {
+      "type": "text",
+      "id": "hero_video_url",
+      "label": "Hero background video URL (optional — mp4, overrides image)"
+    },
+    {
+      "type": "header",
+      "content": "Featured Banner"
+    },
+    {
+      "type": "text",
+      "id": "featured_eyebrow",
+      "label": "Banner eyebrow",
+      "default": "The Glass Guide"
+    },
+    {
+      "type": "text",
+      "id": "featured_title",
+      "label": "Banner title",
+      "default": "Everything you need to know about glass."
+    },
+    {
+      "type": "text",
+      "id": "featured_sub",
+      "label": "Banner subtitle",
+      "default": "How it works, what each piece does, and why the material matters for a cleaner, smoother session."
+    },
+    {
+      "type": "url",
+      "id": "featured_url",
+      "label": "Banner link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Learning Hub Index"
+    }
+  ]
+}
+{% endschema %}

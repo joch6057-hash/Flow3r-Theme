@@ -1,0 +1,84 @@
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [],
+  "presets": [{ "name": "Blog" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-cur">{% if blog.title == 'News' or blog.title == 'news' %}The Journal{% else %}{{ blog.title }}{% endif %}</span>
+  </nav>
+
+  <div class="blog-header">
+    <div class="blog-header-eyebrow">
+      <img src="{{ 'flaviconfinal.png' | asset_url }}" class="logo-accent" alt="" aria-hidden="true">
+      Flow3r Journal
+    </div>
+    <h1 class="blog-header-h">{% if blog.title == 'News' or blog.title == 'news' %}The Journal{% else %}{{ blog.title }}{% endif %}</h1>
+    <p class="blog-header-sub">Glass care guides, California culture, brand stories, and everything in between.</p>
+  </div>
+
+  {%- if blog.articles.size > 0 -%}
+    {%- paginate blog.articles by 9 -%}
+      <div class="blog-grid">
+        {%- for article in blog.articles -%}
+          <article class="blog-card">
+            <a href="{{ article.url }}" class="blog-card-img-wrap" aria-hidden="true" tabindex="-1">
+              {%- if article.image -%}
+                <img src="{{ article.image | image_url: width: 600 }}" alt="{{ article.image.alt | escape }}" class="blog-card-img" loading="lazy" width="600" height="337">
+              {%- else -%}
+                <div class="blog-card-img-ph">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="4" y="4" width="32" height="32" rx="6" stroke="rgba(36,80,52,.3)" stroke-width="1.5"/><circle cx="15" cy="15" r="4" stroke="rgba(36,80,52,.3)" stroke-width="1.5"/><path d="M4 28l10-8 8 6 5-4 9 10" stroke="rgba(36,80,52,.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              {%- endif -%}
+            </a>
+            <div class="blog-card-body">
+              {%- if article.tags.size > 0 -%}
+                <div class="blog-card-tag">{{ article.tags.first | replace: '-', ' ' | capitalize }}</div>
+              {%- endif -%}
+              <h2 class="blog-card-title">
+                <a href="{{ article.url }}">{{ article.title }}</a>
+              </h2>
+              <p class="blog-card-excerpt">{{ article.excerpt_or_content | strip_html | truncate: 140 }}</p>
+              <div class="blog-card-foot">
+                <span class="blog-card-date">{{ article.published_at | date: "%b %d, %Y" }}</span>
+                <a href="{{ article.url }}" class="blog-card-read">Read →</a>
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <div class="blog-pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" class="blog-pag-btn">‹</a>
+          {%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}" class="blog-pag-btn">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}
+              <span class="blog-pag-btn active">{{ part.title }}</span>
+            {%- else -%}
+              <span class="blog-pag-btn dim">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" class="blog-pag-btn">›</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- else -%}
+    <div class="blog-empty">
+      <div class="blog-empty-icon">✦</div>
+      <h3>Coming Soon</h3>
+      <p>We're working on guides, stories, and more. Check back soon.</p>
+      <a href="/collections/all" class="btn btn-dk" style="margin-top:20px;display:inline-flex">Browse Products</a>
+    </div>
+  {%- endif -%}
+</div>

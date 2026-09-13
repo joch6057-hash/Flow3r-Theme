@@ -1,0 +1,29 @@
+{% schema %}{"name":"Search","settings":[],"presets":[{"name":"Search"}]}{% endschema %}
+<div class="page-top">
+  <div class="breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">Search</span></div>
+  <div style="padding:52px 44px 80px;background:#f6f5f2;min-height:60vh">
+    <h1 style="font-size:36px;font-weight:800;margin-bottom:28px">Search Results</h1>
+    {%- if search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <p style="font-size:15px;color:#555;margin-bottom:28px">{{ search.results_count }} result{{ search.results_count | pluralize: '', 's' }} for "{{ search.terms | escape }}"</p>
+        <div class="prod-grid">
+          {%- for result in search.results -%}
+            {%- if result.object_type == 'product' -%}
+              {%- render 'product-card', product: result -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <p style="font-size:16px;color:#555">No results for "{{ search.terms | escape }}". Try a different search.</p>
+      {%- endif -%}
+    {%- else -%}
+      <form action="/search" method="get" style="max-width:480px">
+        <input type="hidden" name="type" value="product">
+        <div style="display:flex;border:1.5px solid rgba(0,0,0,.14);border-radius:12px;overflow:hidden;background:#fff">
+          <input type="search" name="q" placeholder="Search products…" style="flex:1;border:none;padding:14px 18px;font-family:Outfit,sans-serif;font-size:16px;outline:none">
+          <button type="submit" style="background:#245034;color:#fff;border:none;padding:14px 22px;font-family:Outfit,sans-serif;font-size:15px;font-weight:700;cursor:pointer">Search</button>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</div>

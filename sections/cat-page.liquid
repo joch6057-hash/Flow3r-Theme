@@ -1,0 +1,104 @@
+{% schema %}
+{
+  "name": "Cat Fam Page",
+  "settings": [
+    { "type": "image_picker", "id": "cat_photo_1", "label": "Cat Photo 1" },
+    { "type": "image_picker", "id": "cat_photo_2", "label": "Cat Photo 2" },
+    { "type": "image_picker", "id": "cat_photo_3", "label": "Cat Photo 3" },
+    { "type": "image_picker", "id": "cat_photo_4", "label": "Cat Photo 4" },
+    { "type": "image_picker", "id": "cat_photo_5", "label": "Cat Photo 5" },
+    { "type": "image_picker", "id": "cat_photo_6", "label": "Cat Photo 6" },
+    { "type": "collection", "id": "cat_collection", "label": "Cat Collection" }
+  ],
+  "presets": [{ "name": "Cat Fam Page" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">Cat Fam 🐾</span></nav>
+
+  <!-- HERO -->
+  <div class="cat-hero">
+    <div class="cat-hero-text">
+      <h1>We Love Cats.<br>We Know You Do Too.</h1>
+      <p>We're stoners with a cat. We figured a lot of you are too. So we made a whole collection for us — cat-themed pieces with real personality, and a chunk of every purchase goes straight to a local cat shelter. Good glass, good vibes, good karma.</p>
+      <a href="/collections/cat-collection" class="btn btn-dk">Shop the Cat Collection</a>
+    </div>
+    <div>
+      <svg width="180" height="180" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+        <polygon points="10,18 4,2 20,13" fill="#d4ecde"/>
+        <polygon points="50,18 56,2 40,13" fill="#d4ecde"/>
+        <polygon points="10,17 7,6 19,13" fill="#c0e8d0"/>
+        <polygon points="50,17 53,6 41,13" fill="#c0e8d0"/>
+        <ellipse cx="30" cy="34" rx="24" ry="22" fill="#e8f5ed"/>
+        <ellipse cx="20" cy="30" rx="4.5" ry="5.5" fill="#245034"/>
+        <ellipse cx="40" cy="30" rx="4.5" ry="5.5" fill="#245034"/>
+        <ellipse cx="21" cy="28.5" rx="1.8" ry="2.5" fill="#fff"/>
+        <ellipse cx="41" cy="28.5" rx="1.8" ry="2.5" fill="#fff"/>
+        <ellipse cx="22.5" cy="28" rx="0.9" ry="1.2" fill="#0d0d0d"/>
+        <ellipse cx="42.5" cy="28" rx="0.9" ry="1.2" fill="#0d0d0d"/>
+        <circle cx="22.5" cy="27.3" r=".6" fill="#fff"/>
+        <circle cx="42.5" cy="27.3" r=".6" fill="#fff"/>
+        <ellipse cx="30" cy="38" rx="2.5" ry="2" fill="#6ab98a"/>
+        <path d="M27.5 40 Q30 43 32.5 40" stroke="#245034" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <line x1="5" y1="35" x2="22" y2="37" stroke="#245034" stroke-width=".9" opacity=".32" stroke-linecap="round"/>
+        <line x1="5" y1="39" x2="22" y2="39" stroke="#245034" stroke-width=".9" opacity=".32" stroke-linecap="round"/>
+        <line x1="38" y1="37" x2="55" y2="35" stroke="#245034" stroke-width=".9" opacity=".32" stroke-linecap="round"/>
+        <line x1="38" y1="39" x2="55" y2="39" stroke="#245034" stroke-width=".9" opacity=".32" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- CAT PHOTOS GRID -->
+  <div class="cat-photos">
+    {%- assign cat_photos = "cat_photo_1,cat_photo_2,cat_photo_3,cat_photo_4,cat_photo_5,cat_photo_6" | split: "," -%}
+    {%- for photo_key in cat_photos -%}
+      {%- assign photo = section.settings[photo_key] -%}
+      <div class="cat-photo-slot">
+        {%- if photo != blank -%}
+          <img src="{{ photo | image_url: width: 600 }}"
+               alt="Cat photo {{ forloop.index }}"
+               style="width:100%;height:100%;object-fit:cover;border-radius:var(--r2)">
+        {%- else -%}
+          <span style="font-size:32px">📷</span>
+          <div class="cat-photo-slot-label">Your cat photo here</div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <!-- CAT COLLECTION PRODUCTS -->
+  <section style="padding:50px 44px;background:#fff">
+    <h2 style="font-size:28px;font-weight:800;margin-bottom:8px">The Cat Collection</h2>
+    <p style="font-size:16px;color:#555;margin-bottom:30px;max-width:490px;line-height:1.7">Cat-themed pieces. Paw print engravings, subtle tabby accents, same premium borosilicate glass. 10% of every purchase supports a local cat shelter.</p>
+
+    {%- assign cat_col = collections[section.settings.cat_collection] -%}
+    {%- if cat_col != blank and cat_col.products.size > 0 -%}
+      <div class="prod-grid">
+        {%- for product in cat_col.products -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div style="background:var(--f1);border-radius:var(--r2);padding:40px;text-align:center;border:2px dashed rgba(106,185,138,.35)">
+        <div style="font-size:36px;margin-bottom:12px">🐾</div>
+        <p style="font-size:16px;color:var(--gt);font-weight:600">Cat Collection products will appear here once added.</p>
+        <p style="font-size:14px;color:var(--g3);margin-top:6px">Go to Theme Settings → Cat Fam Page → select your Cat Collection.</p>
+      </div>
+    {%- endif -%}
+  </section>
+
+  <!-- CHARITY INFO -->
+  <div class="cat-charity">
+    <div class="cat-charity-box">
+      <div class="cat-charity-icon">🏠</div>
+      <div>
+        <h3>Rounding Up for Cat Shelters</h3>
+        <p>Every Cat Collection purchase includes an automatic <strong>10% donation</strong> to our local cat shelter partner. You can also choose to round up your order total at checkout — the spare change goes directly to shelter operations.</p>
+        <p>We're California-based and support local shelters wherever our orders go. When you buy a cat piece, you're helping cats find homes. That's pretty good karma for a smoke sesh.</p>
+        <a href="/collections/cat-collection" class="btn btn-dk" style="margin-top:12px;display:inline-flex">Shop Cat Collection →</a>
+      </div>
+    </div>
+  </div>
+
+</div>

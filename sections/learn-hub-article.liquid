@@ -1,0 +1,297 @@
+{{ 'learn-hub.css' | asset_url | stylesheet_tag }}
+
+{%- assign word_count = article.content | strip_html | split: ' ' | size -%}
+{%- assign read_time = word_count | divided_by: 200 | plus: 1 -%}
+
+{%- comment -%} ── MOBILE: BACK LINK ── {%- endcomment -%}
+<div class="lh-article-mobile-back">
+  <a href="{{ blog.url }}">← The Learning Hub</a>
+</div>
+<nav class="lh-breadcrumb" aria-label="Breadcrumb">
+  <div class="lh-breadcrumb__inner">
+    <a href="/">Home</a>
+    <span>/</span>
+    <a href="{{ blog.url }}">The Learning Hub</a>
+    <span>/</span>
+    <span>{{ article.title }}</span>
+  </div>
+</nav>
+
+{%- comment -%} ── ARTICLE HEADER ── {%- endcomment -%}
+<header class="lh-article-header">
+  {%- if article.tags.first -%}
+    <span class="lh-article-header__tag">{{ article.tags.first }}</span>
+  {%- endif -%}
+
+  <h1 class="lh-article-header__title">{{ article.title }}</h1>
+
+  <p class="lh-article-header__meta">
+    {{ article.published_at | date: "%B %d, %Y" }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ read_time }} min read
+  </p>
+</header>
+
+{%- comment -%} ── HERO IMAGE ── {%- endcomment -%}
+{%- if article.image -%}
+  <div class="lh-article-hero-img">
+    <img
+      src="{{ article.image | image_url: width: 1200 }}"
+      alt="{{ article.image.alt | default: article.title | escape }}"
+      width="1200"
+      loading="eager"
+    >
+  </div>
+{%- endif -%}
+
+{%- comment -%} ── BODY: CONTENT + SIDEBAR ── {%- endcomment -%}
+<div class="lh-article-body">
+
+  {%- comment -%} Main content {%- endcomment -%}
+  <div class="lh-article-content" id="lh-article-content">
+    {{ article.content }}
+  </div>
+
+  {%- comment -%} Sidebar {%- endcomment -%}
+  <aside class="lh-article-sidebar" aria-label="Article sidebar">
+
+    {%- comment -%} TOC — populated by JS from H2s in article content {%- endcomment -%}
+    <nav class="lh-toc" id="lh-toc" aria-label="Table of contents">
+      <p class="lh-toc__label">In this article</p>
+      <ul class="lh-toc__list" id="lh-toc-list"></ul>
+    </nav>
+
+    {%- comment -%} Product callout — set in customizer per article {%- endcomment -%}
+    {%- if section.settings.product_url != blank -%}
+      <div class="lh-product-callout">
+        {%- if section.settings.product_image != blank -%}
+          <div class="lh-product-callout__img">
+            <img
+              src="{{ section.settings.product_image | image_url: width: 560 }}"
+              alt="{{ section.settings.product_name | escape }}"
+              width="560"
+              loading="lazy"
+            >
+          </div>
+        {%- endif -%}
+        <div class="lh-product-callout__body">
+          <p class="lh-product-callout__label">Featured</p>
+          <p class="lh-product-callout__name">{{ section.settings.product_name }}</p>
+          <a href="{{ section.settings.product_url }}" class="lh-product-callout__link">
+            Shop Now
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+
+  </aside>
+</div>
+
+{%- comment -%} ── RELATED ARTICLES ── {%- endcomment -%}
+{%- if blog.articles_count > 1 -%}
+  {%- assign related_count = 0 -%}
+  {%- assign max_related = 3 -%}
+
+  {%- comment -%} Prefer same-tagged articles first {%- endcomment -%}
+  {%- assign related_articles = '' | split: '' -%}
+  {%- if article.tags.size > 0 -%}
+    {%- for a in blog.articles -%}
+      {%- if a.id != article.id and related_count < max_related -%}
+        {%- for tag in a.tags -%}
+          {%- if article.tags contains tag -%}
+            {%- assign related_articles = related_articles | concat: a -%}
+            {%- assign related_count = related_count | plus: 1 -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- comment -%} Fill remaining with any articles {%- endcomment -%}
+  {%- if related_count < max_related -%}
+    {%- for a in blog.articles -%}
+      {%- if a.id != article.id and related_count < max_related -%}
+        {%- unless related_articles contains a -%}
+          {%- assign related_articles = related_articles | concat: a -%}
+          {%- assign related_count = related_count | plus: 1 -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  {%- if related_count > 0 -%}
+    <section class="lh-related">
+      <div class="lh-related__inner">
+        <div class="lh-related__header">
+          <p class="lh-related__label">More from the Hub</p>
+          <a href="{{ blog.url }}" class="lh-related__all">View all →</a>
+        </div>
+        <div class="lh-related__grid">
+          {%- for a in related_articles -%}
+            {%- assign rword = a.content | strip_html | split: ' ' | size -%}
+            {%- assign rtime = rword | divided_by: 200 | plus: 1 -%}
+            <a href="{{ a.url }}" class="lh-card">
+              <div class="lh-card__img">
+                {%- if a.image -%}
+                  <img
+                    src="{{ a.image | image_url: width: 600 }}"
+                    alt="{{ a.image.alt | default: a.title | escape }}"
+                    loading="lazy"
+                    width="600"
+                    height="375"
+                  >
+                {%- else -%}
+                  <div class="lh-card__img-placeholder">
+                    <span>{{ a.tags.first | default: 'Learn' }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+              <div class="lh-card__body">
+                {%- if a.tags.first -%}
+                  <p class="lh-card__tag">{{ a.tags.first }}</p>
+                {%- endif -%}
+                <h2 class="lh-card__title">{{ a.title }}</h2>
+                <div class="lh-card__meta">
+                  <span class="lh-card__read-time">{{ rtime }} min read</span>
+                  <span class="lh-card__arrow">Read →</span>
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} ── SHOP CTA ── {%- endcomment -%}
+<section class="lh-shop-cta">
+  <p class="lh-shop-cta__eyebrow">Flow3r</p>
+  <h2 class="lh-shop-cta__title">{{ section.settings.cta_title | default: 'See the glass.' }}</h2>
+  <p class="lh-shop-cta__sub">{{ section.settings.cta_subtitle | default: 'Borosilicate. Three colorways. Built to last.' }}</p>
+  <a href="{{ section.settings.cta_link | default: '/pages/shop' }}" class="lh-shop-cta__link">
+    {{ section.settings.cta_button | default: 'Shop Now' }}
+  </a>
+</section>
+
+{%- comment -%} ── TOC + ACTIVE SCROLL SCRIPT ── {%- endcomment -%}
+<script>
+(function () {
+  'use strict';
+
+  var content = document.getElementById('lh-article-content');
+  var toc     = document.getElementById('lh-toc');
+  var tocList = document.getElementById('lh-toc-list');
+
+  if (!content || !toc || !tocList) return;
+
+  var headings = content.querySelectorAll('h2');
+
+  // Hide TOC if fewer than 2 headings
+  if (headings.length < 2) {
+    toc.style.display = 'none';
+    return;
+  }
+
+  // Build TOC
+  headings.forEach(function (h, i) {
+    var id = 'lh-section-' + i;
+    h.id = id;
+
+    var li = document.createElement('li');
+    li.className = 'lh-toc__item';
+
+    var a = document.createElement('a');
+    a.href = '#' + id;
+    a.className = 'lh-toc__link';
+    a.textContent = h.textContent.replace(/^#+\s*/, '');
+
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.getElementById(id);
+      if (target) {
+        var offset = target.getBoundingClientRect().top + window.scrollY - 100;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      }
+    });
+
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+
+  // Active state on scroll
+  var tocLinks = tocList.querySelectorAll('.lh-toc__link');
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        tocLinks.forEach(function (link) {
+          var isActive = link.getAttribute('href') === '#' + id;
+          link.classList.toggle('lh-toc__link--active', isActive);
+        });
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(function (h) { observer.observe(h); });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Learn Hub Article",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Related Product (sidebar)"
+    },
+    {
+      "type": "text",
+      "id": "product_name",
+      "label": "Product name"
+    },
+    {
+      "type": "url",
+      "id": "product_url",
+      "label": "Product URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "header",
+      "content": "Shop CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "CTA title",
+      "default": "See the glass."
+    },
+    {
+      "type": "text",
+      "id": "cta_subtitle",
+      "label": "CTA subtitle",
+      "default": "Borosilicate. Three colorways. Built to last."
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA destination"
+    },
+    {
+      "type": "text",
+      "id": "cta_button",
+      "label": "CTA button label",
+      "default": "Shop Now"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Learn Hub Article"
+    }
+  ]
+}
+{% endschema %}

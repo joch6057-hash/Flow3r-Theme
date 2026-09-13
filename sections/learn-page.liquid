@@ -1,0 +1,522 @@
+{% schema %}
+{
+  "name": "Learn Page",
+  "settings": [
+    { "type": "image_picker", "id": "beaker_img", "label": "Beaker Bong Photo" },
+    { "type": "image_picker", "id": "straight_img", "label": "Straight Tube Photo" },
+    { "type": "image_picker", "id": "recycler_img", "label": "Recycler Photo" },
+    { "type": "image_picker", "id": "dab_img", "label": "Dab Rig Photo" },
+    { "type": "image_picker", "id": "nectar_img", "label": "Nectar Collector Photo" },
+    { "type": "image_picker", "id": "banger_img", "label": "Quartz Banger Photo" },
+    { "type": "image_picker", "id": "shower_img", "label": "Showerhead Perc Photo" },
+    { "type": "image_picker", "id": "honey_img", "label": "Honeycomb Perc Photo" },
+    { "type": "image_picker", "id": "tree_img", "label": "Tree Perc Photo" },
+    { "type": "image_picker", "id": "inline_img", "label": "Inline Perc Photo" },
+    { "type": "image_picker", "id": "ice_img", "label": "Ice Catcher Photo" }
+  ],
+  "presets": [{ "name": "Learn Page" }]
+}
+{% endschema %}
+
+<style>
+/* ── GLASS GUIDE SIDEBAR LAYOUT ── */
+.lg-layout {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .lg-layout {
+    display: block;
+  }
+}
+
+.lg-content {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .lg-content {
+    margin-left: 200px;
+  }
+}
+
+/* Sidebar */
+.lg-sidebar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .lg-sidebar {
+    display: block;
+    width: 200px;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    z-index: 89;
+    overflow-y: auto;
+    background: #ffffff;
+    border-right: 1px solid #d4d4d4;
+    padding: 44px 0 40px;
+    scrollbar-width: none;
+  }
+  .lg-sidebar::-webkit-scrollbar { display: none; }
+}
+
+.lg-sidebar-eyebrow {
+  font-family: 'Neue Montreal', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.3);
+  padding: 0 24px 16px;
+  display: block;
+}
+
+.lg-sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lg-sidebar-item {
+  margin: 0;
+}
+
+.lg-sidebar-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 24px 10px 22px;
+  font-family: 'Neue Montreal', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #888882;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+  transition: color 0.18s, border-color 0.18s;
+}
+
+.lg-sidebar-link:hover {
+  color: #0d0d0d;
+}
+
+.lg-sidebar-link.active {
+  color: #245034;
+  border-left-color: #245034;
+  font-weight: 500;
+  font-size: 13.5px;
+}
+
+.lg-sidebar-num {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #245034;
+  flex-shrink: 0;
+  margin-top: 2px;
+  opacity: 0.45;
+  transition: opacity 0.18s;
+}
+
+.lg-sidebar-link.active .lg-sidebar-num {
+  opacity: 1;
+}
+
+.lg-sidebar-link:hover .lg-sidebar-num {
+  opacity: 0.7;
+}
+
+/* Remove old nav bar */
+.lg-nav { display: none !important; }
+
+/* Hide image containers when no image is set */
+.lg-card-img:has(> svg:only-child),
+.lg-perc-img:has(> svg:only-child),
+.lg-callout-img:has(> svg:only-child) {
+  display: none;
+}
+</style>
+<div class="page-top">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="bc-sep">/</span><a href="/blogs/the-learning-hub">The Learning Hub</a><span class="bc-sep">/</span><span class="bc-cur">The Glass Guide</span></nav>
+
+  <!-- HERO — full width, outside layout -->
+  <section class="lg-hero">
+    <div class="lg-hero-eyebrow"><img src="{{ 'flaviconfinal.png' | asset_url }}" class="logo-accent" alt="" aria-hidden="true"> The Glass Guide</div>
+    <h1 class="lg-hero-h">Everything you need<br>to know about glass.</h1>
+    <p class="lg-hero-sub">How it works, what each piece does, and why the material matters for a cleaner, smoother session.</p>
+  </section>
+
+  <!-- LAYOUT: sidebar + content -->
+  <div class="lg-layout">
+
+    <!-- LEFT SIDEBAR NAV -->
+    <aside class="lg-sidebar" aria-label="Page sections">
+      <span class="lg-sidebar-eyebrow">Sections</span>
+      <ul class="lg-sidebar-list">
+        <li class="lg-sidebar-item">
+          <a href="#why-glass" class="lg-sidebar-link" data-target="why-glass">
+            <span class="lg-sidebar-num">01</span>
+            <span>Why Glass</span>
+          </a>
+        </li>
+        <li class="lg-sidebar-item">
+          <a href="#water-pipes" class="lg-sidebar-link" data-target="water-pipes">
+            <span class="lg-sidebar-num">02</span>
+            <span>Water Pipes</span>
+          </a>
+        </li>
+        <li class="lg-sidebar-item">
+          <a href="#percolators" class="lg-sidebar-link" data-target="percolators">
+            <span class="lg-sidebar-num">03</span>
+            <span>Percolators</span>
+          </a>
+        </li>
+        <li class="lg-sidebar-item">
+          <a href="#dab-rigs" class="lg-sidebar-link" data-target="dab-rigs">
+            <span class="lg-sidebar-num">04</span>
+            <span>Dab Rigs</span>
+          </a>
+        </li>
+        <li class="lg-sidebar-item">
+          <a href="#cleaning" class="lg-sidebar-link" data-target="cleaning">
+            <span class="lg-sidebar-num">05</span>
+            <span>Cleaning</span>
+          </a>
+        </li>
+        <li class="lg-sidebar-item">
+          <a href="#choose" class="lg-sidebar-link" data-target="choose">
+            <span class="lg-sidebar-num">06</span>
+            <span>Choose Your First</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="lg-content">
+
+      <!-- 01: WHY GLASS -->
+      <section class="lg-dark" id="why-glass">
+        <div class="lg-sec-top">
+          <div class="lg-sec-num">01</div>
+          <h2 class="lg-sec-h lg-sec-h-lt">Glass is cleaner.<br>Full stop.</h2>
+          <p class="lg-sec-sub-lt">Plastic, acrylic, and cheap rubber off-gas chemical compounds when heated — directly into your inhale. <strong style="color:var(--gdk)">Borosilicate glass is chemically inert.</strong> It doesn't react with heat. Nothing added, nothing altered.</p>
+        </div>
+        <div class="lg-vs">
+          <div class="lg-vs-col">
+            <div class="lg-vs-col-label">Why glass wins</div>
+            <ul class="lg-check-list">
+              <li>Zero chemical off-gassing at any temperature</li>
+              <li>Non-porous — bacteria and residue can't absorb in</li>
+              <li>Preserves the actual flavor of what you're smoking</li>
+              <li>Doesn't degrade or discolor with regular cleaning</li>
+              <li>Handles ice and warm water without cracking</li>
+            </ul>
+          </div>
+          <div class="lg-vs-col">
+            <div class="lg-vs-col-label">What you're avoiding</div>
+            <ul class="lg-x-list">
+              <li>Acrylic bongs releasing BPA and styrene when heated</li>
+              <li>Cheap rubber grommets that burn and off-gas</li>
+              <li>Unknown metal alloys and plating that vaporize</li>
+              <li>Soft plastic tubing that degrades over time</li>
+              <li>Porous materials that harbor mold between uses</li>
+            </ul>
+            <div class="lg-vs-note">The same reason hospitals use borosilicate for lab equipment is why it's right for a smoking device. Unreactive, non-porous, built for heat.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02: WATER PIPES -->
+      <section class="lg-white" id="water-pipes">
+        <div class="lg-sec-top">
+          <div class="lg-sec-num">02</div>
+          <h2 class="lg-sec-h">Water Pipes &amp; Bongs</h2>
+          <p class="lg-sec-sub">A bong filters smoke through water before it reaches you. Smoke travels down the downstem, bubbles through the base, rises through the neck, and into your lungs. The water <strong>cools the smoke significantly</strong> and <strong>filters out water-soluble particles</strong> — smoother, cooler hits with less throat irritation.</p>
+        </div>
+        <div class="lg-card-grid">
+          <div class="lg-card">
+            <div class="lg-card-img">
+              {%- if section.settings.beaker_img != blank -%}
+                <img src="{{ section.settings.beaker_img | image_url: width: 600 }}" alt="Beaker bong" loading="lazy">
+              {%- else -%}
+                <svg width="70" height="120" viewBox="0 0 78 140" fill="none" aria-hidden="true"><rect x="30" y="6" width="18" height="66" rx="9" fill="rgba(36,80,52,.4)" stroke="rgba(36,80,52,.3)" stroke-width="1"/><path d="M11 84 Q9 116 4 122 L4 125 Q4 127 6 127 L72 127 Q74 127 74 125 L74 122 Q69 116 67 84Z" fill="rgba(36,80,52,.35)"/><rect x="28" y="3" width="22" height="7" rx="3.5" fill="rgba(36,80,52,.38)"/></svg>
+              {%- endif -%}
+            </div>
+            <div class="lg-card-body">
+              <h3 class="lg-card-h">Beaker Bong</h3>
+              <p class="lg-card-p">Wide conical base holds more water for maximum filtration and stability. Extra volume means cooler hits and it's harder to tip over. The most popular everyday driver.</p>
+            </div>
+          </div>
+          <div class="lg-card">
+            <div class="lg-card-img">
+              {%- if section.settings.straight_img != blank -%}
+                <img src="{{ section.settings.straight_img | image_url: width: 600 }}" alt="Straight tube bong" loading="lazy">
+              {%- else -%}
+                <svg width="30" height="120" viewBox="0 0 34 110" fill="none" aria-hidden="true"><rect x="10" y="4" width="14" height="94" rx="7" fill="rgba(36,80,52,.4)" stroke="rgba(36,80,52,.3)" stroke-width="1"/><ellipse cx="17" cy="102" rx="14" ry="7" fill="rgba(36,80,52,.35)"/><rect x="10" y="1" width="14" height="6" rx="3" fill="rgba(36,80,52,.42)"/></svg>
+              {%- endif -%}
+            </div>
+            <div class="lg-card-body">
+              <h3 class="lg-card-h">Straight Tube</h3>
+              <p class="lg-card-p">Single cylinder, no-frills. Faster clearance than a beaker, easier to clean, consistent draw. What most experienced smokers reach for because it just works.</p>
+            </div>
+          </div>
+          <div class="lg-card">
+            <div class="lg-card-img">
+              {%- if section.settings.recycler_img != blank -%}
+                <img src="{{ section.settings.recycler_img | image_url: width: 600 }}" alt="Recycler bong" loading="lazy">
+              {%- else -%}
+                <svg width="90" height="120" viewBox="0 0 100 110" fill="none" aria-hidden="true"><ellipse cx="50" cy="74" rx="40" ry="34" fill="rgba(36,80,52,.3)" stroke="rgba(36,80,52,.25)" stroke-width="1"/><rect x="40" y="10" width="20" height="50" rx="10" fill="rgba(36,80,52,.4)" stroke="rgba(36,80,52,.28)" stroke-width="1"/><path d="M16 82 Q4 60 16 42 Q24 28 38 27" stroke="rgba(36,80,52,.33)" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M84 82 Q96 60 84 42 Q76 28 62 27" stroke="rgba(36,80,52,.33)" stroke-width="8" fill="none" stroke-linecap="round"/></svg>
+              {%- endif -%}
+            </div>
+            <div class="lg-card-body">
+              <h3 class="lg-card-h">Recycler</h3>
+              <p class="lg-card-p">Water loops continuously through two chambers — smoke cycles through water multiple times. Zero splashback, smoothest hit possible. FLOW3R's signature piece.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg-callout">
+          <div class="lg-callout-img">
+            {%- if section.settings.ice_img != blank -%}
+              <img src="{{ section.settings.ice_img | image_url: width: 200 }}" alt="Ice catcher" loading="lazy">
+            {%- else -%}
+              <svg width="72" height="96" viewBox="0 0 72 96" fill="none" aria-hidden="true"><rect x="26" y="2" width="20" height="92" rx="10" fill="rgba(36,80,52,.28)" stroke="rgba(36,80,52,.35)" stroke-width="1.2"/><line x1="20" y1="36" x2="32" y2="36" stroke="rgba(36,80,52,.7)" stroke-width="2.5" stroke-linecap="round"/><line x1="40" y1="36" x2="52" y2="36" stroke="rgba(36,80,52,.7)" stroke-width="2.5" stroke-linecap="round"/><line x1="20" y1="43" x2="32" y2="43" stroke="rgba(36,80,52,.7)" stroke-width="2.5" stroke-linecap="round"/><line x1="40" y1="43" x2="52" y2="43" stroke="rgba(36,80,52,.7)" stroke-width="2.5" stroke-linecap="round"/><rect x="28" y="28" width="10" height="10" rx="2" fill="rgba(180,220,240,.6)"/><rect x="40" y="31" width="8" height="8" rx="2" fill="rgba(180,220,240,.5)"/><rect x="32" y="50" width="9" height="9" rx="2" fill="rgba(180,220,240,.45)"/></svg>
+            {%- endif -%}
+          </div>
+          <div class="lg-callout-body">
+            <div class="lg-callout-label">Quick upgrade</div>
+            <h3 class="lg-callout-h">Ice Catchers</h3>
+            <p class="lg-callout-p">Notches inside the neck hold ice above the water chamber. Smoke cools <strong>40–60°F before you inhale</strong> — immediately noticeable difference. No extra parts, no maintenance. Drop a few cubes in and go. Use large cube ice for best results; crushed ice melts faster and raises the water level.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03: PERCOLATORS -->
+      <section class="lg-cream" id="percolators">
+        <div class="lg-sec-top">
+          <div class="lg-sec-num">03</div>
+          <h2 class="lg-sec-h">Percolators</h2>
+          <p class="lg-sec-sub">A percolator breaks smoke into many tiny bubbles — increasing the surface area that contacts water. More contact = more cooling, more filtration, smoother hit. FLOW3R pieces balance filtration without making clearance a workout.</p>
+        </div>
+        <div class="lg-perc-grid">
+          <div class="lg-perc-card">
+            <div class="lg-perc-img">
+              {%- if section.settings.shower_img != blank -%}
+                <img src="{{ section.settings.shower_img | image_url: width: 400 }}" alt="Showerhead percolator" loading="lazy">
+              {%- else -%}
+                <svg width="100" height="80" viewBox="0 0 100 80" fill="none" aria-hidden="true"><rect x="37" y="6" width="26" height="50" rx="13" fill="rgba(36,80,52,.22)" stroke="rgba(36,80,52,.4)" stroke-width="1.2"/><line x1="18" y1="54" x2="82" y2="54" stroke="rgba(36,80,52,.5)" stroke-width="2"/><line x1="24" y1="61" x2="33" y2="54" stroke="rgba(36,80,52,.4)" stroke-width="1.5"/><line x1="40" y1="61" x2="45" y2="54" stroke="rgba(36,80,52,.4)" stroke-width="1.5"/><line x1="55" y1="61" x2="55" y2="54" stroke="rgba(36,80,52,.4)" stroke-width="1.5"/><line x1="67" y1="61" x2="65" y2="54" stroke="rgba(36,80,52,.4)" stroke-width="1.5"/></svg>
+              {%- endif -%}
+            </div>
+            <h4 class="lg-perc-h">Showerhead</h4>
+            <p class="lg-perc-p">A tube that flares out with multiple slits, spraying smoke in a fan pattern. Strong filtration, moderate drag.</p>
+          </div>
+          <div class="lg-perc-card">
+            <div class="lg-perc-img">
+              {%- if section.settings.honey_img != blank -%}
+                <img src="{{ section.settings.honey_img | image_url: width: 400 }}" alt="Honeycomb percolator" loading="lazy">
+              {%- else -%}
+                <svg width="100" height="80" viewBox="0 0 100 80" fill="none" aria-hidden="true"><ellipse cx="50" cy="42" rx="34" ry="18" fill="rgba(36,80,52,.18)" stroke="rgba(36,80,52,.38)" stroke-width="1.2"/><circle cx="36" cy="42" r="2.2" fill="rgba(36,80,52,.6)"/><circle cx="43" cy="37" r="2.2" fill="rgba(36,80,52,.6)"/><circle cx="50" cy="42" r="2.2" fill="rgba(36,80,52,.6)"/><circle cx="57" cy="37" r="2.2" fill="rgba(36,80,52,.6)"/><circle cx="64" cy="42" r="2.2" fill="rgba(36,80,52,.6)"/><circle cx="43" cy="47" r="2.2" fill="rgba(36,80,52,.6)"/><circle cx="57" cy="47" r="2.2" fill="rgba(36,80,52,.6)"/></svg>
+              {%- endif -%}
+            </div>
+            <h4 class="lg-perc-h">Honeycomb</h4>
+            <p class="lg-perc-p">A flat disc with dozens of tiny holes. Maximum bubbles simultaneously. Excellent filtration with very low drag.</p>
+          </div>
+          <div class="lg-perc-card">
+            <div class="lg-perc-img">
+              {%- if section.settings.tree_img != blank -%}
+                <img src="{{ section.settings.tree_img | image_url: width: 400 }}" alt="Tree percolator" loading="lazy">
+              {%- else -%}
+                <svg width="100" height="80" viewBox="0 0 100 80" fill="none" aria-hidden="true"><rect x="47" y="4" width="6" height="60" rx="3" fill="rgba(36,80,52,.45)"/><line x1="50" y1="18" x2="29" y2="50" stroke="rgba(36,80,52,.4)" stroke-width="2" stroke-linecap="round"/><line x1="50" y1="18" x2="71" y2="50" stroke="rgba(36,80,52,.4)" stroke-width="2" stroke-linecap="round"/><line x1="50" y1="28" x2="20" y2="55" stroke="rgba(36,80,52,.3)" stroke-width="1.5" stroke-linecap="round"/><line x1="50" y1="28" x2="80" y2="55" stroke="rgba(36,80,52,.3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+              {%- endif -%}
+            </div>
+            <h4 class="lg-perc-h">Tree Perc</h4>
+            <p class="lg-perc-p">Multiple arms extending from a central tube, each with slits. Great filtration and impressive aesthetics.</p>
+          </div>
+          <div class="lg-perc-card">
+            <div class="lg-perc-img">
+              {%- if section.settings.inline_img != blank -%}
+                <img src="{{ section.settings.inline_img | image_url: width: 400 }}" alt="Inline percolator" loading="lazy">
+              {%- else -%}
+                <svg width="100" height="80" viewBox="0 0 100 80" fill="none" aria-hidden="true"><rect x="14" y="32" width="72" height="18" rx="9" fill="rgba(36,80,52,.22)" stroke="rgba(36,80,52,.4)" stroke-width="1.2"/><circle cx="27" cy="41" r="2.5" fill="rgba(36,80,52,.56)"/><circle cx="38" cy="38" r="2.5" fill="rgba(36,80,52,.56)"/><circle cx="50" cy="41" r="2.5" fill="rgba(36,80,52,.56)"/><circle cx="62" cy="38" r="2.5" fill="rgba(36,80,52,.56)"/><circle cx="73" cy="41" r="2.5" fill="rgba(36,80,52,.56)"/></svg>
+              {%- endif -%}
+            </div>
+            <h4 class="lg-perc-h">Inline / Matrix</h4>
+            <p class="lg-perc-p">Horizontal tube covered in a grid of holes. Even filtration distribution. Consistently smooth — favored in premium rigs.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04: DAB RIGS -->
+      <section class="lg-white" id="dab-rigs">
+        <div class="lg-sec-top">
+          <div class="lg-sec-num">04</div>
+          <h2 class="lg-sec-h">Dab Rigs</h2>
+          <p class="lg-sec-sub">Dab rigs use a banger or nail heated by a torch rather than a bowl. Smaller chambers preserve terpene flavor. Lower temps (350–500°F) give you better taste and a smoother hit.</p>
+        </div>
+        <div class="lg-card-grid">
+          <div class="lg-card">
+            <div class="lg-card-img">
+              {%- if section.settings.dab_img != blank -%}
+                <img src="{{ section.settings.dab_img | image_url: width: 600 }}" alt="Dab rig" loading="lazy">
+              {%- else -%}
+                <svg width="60" height="90" viewBox="0 0 70 90" fill="none" aria-hidden="true"><ellipse cx="35" cy="62" rx="26" ry="22" fill="rgba(36,80,52,.28)"/><rect x="27" y="12" width="16" height="38" rx="8" fill="rgba(36,80,52,.38)"/><line x1="51" y1="44" x2="62" y2="35" stroke="rgba(36,80,52,.5)" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="65" cy="33" rx="7" ry="5" fill="rgba(36,80,52,.38)"/></svg>
+              {%- endif -%}
+            </div>
+            <div class="lg-card-body">
+              <h3 class="lg-card-h">Dab Rig</h3>
+              <p class="lg-card-p">A small rig with a banger heated by a torch. Smaller chamber preserves terpene flavor. Lower temps (350–500°F) = better taste, smoother hit.</p>
+            </div>
+          </div>
+          <div class="lg-card">
+            <div class="lg-card-img">
+              {%- if section.settings.nectar_img != blank -%}
+                <img src="{{ section.settings.nectar_img | image_url: width: 600 }}" alt="Nectar collector" loading="lazy">
+              {%- else -%}
+                <svg width="26" height="90" viewBox="0 0 32 90" fill="none" aria-hidden="true"><rect x="9" y="4" width="14" height="72" rx="7" fill="rgba(36,80,52,.35)"/><ellipse cx="16" cy="80" rx="13" ry="6" fill="rgba(36,80,52,.28)"/><rect x="9" y="1" width="14" height="6" rx="3" fill="rgba(36,80,52,.42)"/></svg>
+              {%- endif -%}
+            </div>
+            <div class="lg-card-body">
+              <h3 class="lg-card-h">Nectar Collector</h3>
+              <p class="lg-card-p">Vertical dab straw. Heat the tip, touch and inhale. No banger setup needed. The easiest entry point into dabbing.</p>
+            </div>
+          </div>
+          <div class="lg-card">
+            <div class="lg-card-img">
+              {%- if section.settings.banger_img != blank -%}
+                <img src="{{ section.settings.banger_img | image_url: width: 600 }}" alt="Quartz banger" loading="lazy">
+              {%- else -%}
+                <svg width="70" height="66" viewBox="0 0 80 70" fill="none" aria-hidden="true"><rect x="8" y="18" width="50" height="34" rx="8" fill="rgba(36,80,52,.28)"/><rect x="18" y="6" width="30" height="14" rx="5" fill="rgba(36,80,52,.35)"/><rect x="13" y="48" width="40" height="8" rx="4" fill="rgba(36,80,52,.22)"/></svg>
+              {%- endif -%}
+            </div>
+            <div class="lg-card-body">
+              <h3 class="lg-card-h">Quartz Banger</h3>
+              <p class="lg-card-p">The preferred nail for dab rigs. Flavor-neutral, heats evenly, retains heat well. Fits any 14mm female rig.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05: CLEANING -->
+      <section class="lg-cream" id="cleaning">
+        <div class="lg-sec-top">
+          <div class="lg-sec-num">05</div>
+          <h2 class="lg-sec-h">How to Clean Your Piece</h2>
+          <p class="lg-sec-sub">Clean glass hits better and lasts longer. Resin buildup affects flavor immediately — a two-minute rinse after every session prevents almost all buildup.</p>
+        </div>
+        <div class="lg-clean-grid">
+          <div class="lg-clean-step">
+            <div class="lg-clean-step-label">After every session</div>
+            <p>Rinse with warm water immediately. This prevents buildup from hardening and keeps your piece fresh with minimal effort.</p>
+          </div>
+          <div class="lg-clean-step">
+            <div class="lg-clean-step-label">Weekly deep clean</div>
+            <p>Add 91%+ isopropyl alcohol and coarse salt to the chamber. Cap the openings, shake for 2–3 minutes, rinse thoroughly. Let dry completely before next use.</p>
+          </div>
+          <div class="lg-clean-step">
+            <div class="lg-clean-step-label">Stubborn resin</div>
+            <p>Soak in isopropyl for 30–60 minutes, then shake. For tight perc holes, use pipe cleaners or cotton swabs after soaking.</p>
+          </div>
+          <div class="lg-clean-step">
+            <div class="lg-clean-step-label">Downstems &amp; bowls</div>
+            <p>Pull them out and soak separately in a zip bag with isopropyl. Far more effective than cleaning while attached.</p>
+          </div>
+        </div>
+        <div class="lg-clean-never">
+          <div class="lg-clean-never-label">Never do this</div>
+          <div class="lg-clean-never-grid">
+            <span>✗&nbsp; Dish soap — leaves flavor residue</span>
+            <span>✗&nbsp; Hot glass to cold water — thermal shock cracks it</span>
+            <span>✗&nbsp; Abrasive scrubbers on glass surfaces</span>
+            <span>✗&nbsp; Leaving water to sit between sessions</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06: CHOOSE -->
+      <section class="lg-choose" id="choose">
+        <div class="lg-sec-top" style="text-align:center;margin-left:auto;margin-right:auto">
+          <div class="lg-sec-num" style="justify-content:center">06</div>
+          <h2 class="lg-sec-h lg-sec-h-lt">Choose your first piece.</h2>
+          <p class="lg-sec-sub-lt">Not sure where to start? We've got you.</p>
+        </div>
+        <div class="lg-choose-grid">
+          <div class="lg-choose-card">
+            <div class="lg-choose-tag">Flower</div>
+            <h3 class="lg-choose-h">You smoke flower</h3>
+            <p class="lg-choose-p">Start with a beaker or straight tube. Ice catcher is a bonus. One perc is plenty — get comfortable with the basics first.</p>
+          </div>
+          <div class="lg-choose-card">
+            <div class="lg-choose-tag">Dabs</div>
+            <h3 class="lg-choose-h">You're into dabs</h3>
+            <p class="lg-choose-p">Go smaller — a 6–8" dab rig with a quartz banger. Smaller chamber = better flavor. A nectar collector is the easiest way to start.</p>
+          </div>
+          <div class="lg-choose-card">
+            <div class="lg-choose-tag">Portability</div>
+            <h3 class="lg-choose-h">You want portability</h3>
+            <p class="lg-choose-p">A bubbler handles flower, fits in a bag, and gives smoother hits than a dry pipe. For dabs on the go, a nectar collector is compact and capable.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>{%- comment -%}end .lg-content{%- endcomment -%}
+  </div>{%- comment -%}end .lg-layout{%- endcomment -%}
+
+</div>{%- comment -%}end .page-top{%- endcomment -%}
+
+<script>
+(function () {
+  'use strict';
+
+  var links = document.querySelectorAll('.lg-sidebar-link');
+  if (!links.length) return;
+
+  var sections = [];
+  links.forEach(function (link) {
+    var id = link.dataset.target;
+    var el = document.getElementById(id);
+    if (el) sections.push({ el: el, link: link });
+
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = document.getElementById(id);
+      if (!target) return;
+      var offset = target.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 120) - 20;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    });
+  });
+
+  if (!sections.length) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('active'); });
+        var match = sections.find(function (s) { return s.el === entry.target; });
+        if (match) match.link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -65% 0px', threshold: 0 });
+
+sections.forEach(function (s) { observer.observe(s.el); });
+
+  // Set first link active on load
+  links[0].classList.add('active');
+
+  // Hide sidebar when footer visible
+  var sidebar = document.querySelector('.lg-sidebar');
+  var footer = document.querySelector('.site-footer');
+  if (sidebar && footer) {
+    var footerObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        sidebar.style.opacity = entry.isIntersecting ? '0' : '1';
+        sidebar.style.pointerEvents = entry.isIntersecting ? 'none' : '';
+      });
+    });
+    footerObserver.observe(footer);
+  }
+})();
+</script>

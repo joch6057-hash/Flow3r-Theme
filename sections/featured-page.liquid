@@ -1,0 +1,103 @@
+{% schema %}
+{
+  "name": "Featured Page",
+  "settings": [
+    { "type": "text", "id": "badge", "label": "Drop Badge Text", "default": "✦ This Month's Feature Drop" },
+    { "type": "text", "id": "product_title", "label": "Featured Product Title", "default": "The Obsidian Recycler" },
+    { "type": "textarea", "id": "product_desc", "label": "Description", "default": "Our flagship closed-loop recycler. Forest green neck stripe, laser-etched FLOW3R mark, and a draw so smooth it'll ruin every other piece for you. Built from thick borosilicate with a sealed chamber system that eliminates splashback entirely." },
+    { "type": "text", "id": "spec1_label", "label": "Spec 1 Label", "default": "System" },
+    { "type": "text", "id": "spec1_val", "label": "Spec 1 Value", "default": "Closed-Loop Recycler" },
+    { "type": "text", "id": "spec2_label", "label": "Spec 2 Label", "default": "Joint" },
+    { "type": "text", "id": "spec2_val", "label": "Spec 2 Value", "default": "14mm Female" },
+    { "type": "text", "id": "spec3_label", "label": "Spec 3 Label", "default": "Height" },
+    { "type": "text", "id": "spec3_val", "label": "Spec 3 Value", "default": "11.5 inches" },
+    { "type": "text", "id": "spec4_label", "label": "Spec 4 Label", "default": "Bowl" },
+    { "type": "text", "id": "spec4_val", "label": "Spec 4 Value", "default": "14mm Male" },
+    { "type": "text", "id": "price", "label": "Price", "default": "$189" },
+    { "type": "text", "id": "ship_note", "label": "Shipping Note", "default": "Free shipping · Ships in 3 days" },
+    { "type": "product", "id": "featured_product", "label": "Featured Product" },
+    { "type": "image_picker", "id": "featured_image", "label": "Featured Product Image" },
+    { "type": "collection", "id": "also_collection", "label": "Also Featured Collection" },
+    { "type": "text", "id": "also_heading", "label": "Also Featured Heading", "default": "Also Featured This Month" }
+  ],
+  "presets": [{ "name": "Featured Page" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a><span class="bc-sep">/</span><span class="bc-cur">Featured</span>
+  </nav>
+
+  <div class="featured-hero">
+    <div class="featured-img">
+      {%- if section.settings.featured_image != blank -%}
+        <img src="{{ section.settings.featured_image | image_url: width: 800 }}"
+             alt="{{ section.settings.product_title | escape }}"
+             width="800" loading="eager"
+             style="max-height:460px;object-fit:contain;position:relative;z-index:1">
+      {%- else -%}
+        <svg width="210" height="370" viewBox="0 0 220 380" fill="none" aria-hidden="true">
+          <ellipse cx="110" cy="238" rx="72" ry="90" fill="rgba(36,80,52,.28)" stroke="rgba(36,80,52,.28)" stroke-width="1.4"/>
+          <ellipse cx="110" cy="238" rx="56" ry="70" fill="rgba(36,80,52,.12)"/>
+          <rect x="93" y="40" width="34" height="118" rx="17" fill="rgba(36,80,52,.32)" stroke="rgba(36,80,52,.28)" stroke-width="1.4"/>
+          <rect x="102" y="47" width="16" height="104" rx="8" fill="rgba(36,80,52,.12)"/>
+          <rect x="91" y="136" width="38" height="6" fill="rgba(36,80,52,.5)"/>
+          <rect x="93" y="36" width="34" height="8" rx="4" fill="rgba(36,80,52,.35)"/>
+          <text x="110" y="92" fill="rgba(36,80,52,.45)" font-size="6" letter-spacing="3.5" text-anchor="middle" font-weight="700">FLOW3R</text>
+          <path d="M48 266 Q33 230 48 188 Q60 165 83 163" stroke="rgba(36,80,52,.28)" stroke-width="9.5" fill="none" stroke-linecap="round"/>
+          <path d="M172 266 Q187 230 172 188 Q160 165 137 163" stroke="rgba(36,80,52,.28)" stroke-width="9.5" fill="none" stroke-linecap="round"/>
+          <line x1="138" y1="226" x2="172" y2="207" stroke="rgba(36,80,52,.45)" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="177" cy="204" rx="12" ry="8" fill="rgba(36,80,52,.38)" stroke="rgba(36,80,52,.28)" stroke-width="1"/>
+          <ellipse cx="110" cy="326" rx="76" ry="15" fill="rgba(36,80,52,.2)" stroke="rgba(36,80,52,.18)" stroke-width="1.2"/>
+        </svg>
+      {%- endif -%}
+    </div>
+
+    <div class="featured-body">
+      <div class="featured-badge">{{ section.settings.badge }}</div>
+      <h1 class="featured-title">{{ section.settings.product_title }}</h1>
+      <p class="featured-desc">{{ section.settings.product_desc }}</p>
+      <div class="featured-specs">
+        <div class="featured-spec-box"><div class="featured-spec-label">{{ section.settings.spec1_label }}</div><div class="featured-spec-val">{{ section.settings.spec1_val }}</div></div>
+        <div class="featured-spec-box"><div class="featured-spec-label">{{ section.settings.spec2_label }}</div><div class="featured-spec-val">{{ section.settings.spec2_val }}</div></div>
+        <div class="featured-spec-box"><div class="featured-spec-label">{{ section.settings.spec3_label }}</div><div class="featured-spec-val">{{ section.settings.spec3_val }}</div></div>
+        <div class="featured-spec-box"><div class="featured-spec-label">{{ section.settings.spec4_label }}</div><div class="featured-spec-val">{{ section.settings.spec4_val }}</div></div>
+      </div>
+      <div class="featured-price-row">
+        <div class="featured-price">
+          {%- if section.settings.featured_product != blank -%}
+            {{ section.settings.featured_product.price | money }}
+          {%- else -%}
+            {{ section.settings.price }}
+          {%- endif -%}
+        </div>
+        <div class="featured-ship">{{ section.settings.ship_note }}</div>
+      </div>
+      <div class="featured-actions">
+        {%- if section.settings.featured_product != blank -%}
+          <button class="btn btn-dk" onclick="Cart.addItem({{ section.settings.featured_product.variants.first.id }}, 1)">Add to Bag</button>
+          <a href="{{ section.settings.featured_product.url }}" class="btn btn-ol">View Full Details</a>
+        {%- else -%}
+          <a href="/collections/all" class="btn btn-dk">Shop Now</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- assign also_col = collections[section.settings.also_collection] -%}
+  <section class="featured-also">
+    <h2 class="sec-h" style="font-size:28px;margin-bottom:26px">{{ section.settings.also_heading }}</h2>
+    {%- if also_col != blank and also_col.products.size > 0 -%}
+      <div class="prod-grid">
+        {%- for product in also_col.products limit: 4 -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="prod-grid">
+        <p style="grid-column:1/-1;text-align:center;padding:40px;color:var(--g2);font-size:16px">Set the "Also Featured Collection" in the theme editor to show products here.</p>
+      </div>
+    {%- endif -%}
+  </section>
+</div>

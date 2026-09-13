@@ -1,0 +1,137 @@
+{% schema %}
+{
+  "name": "Collection Page",
+  "settings": [
+    { "type": "checkbox", "id": "show_banner", "label": "Show Banner", "default": true },
+    { "type": "text", "id": "banner_sub", "label": "Banner Subtext", "default": "High Quality Glass · For a Cleaner & Smoother Session" },
+    { "type": "range", "id": "products_per_page", "min": 8, "max": 48, "step": 4, "label": "Products Per Page", "default": 24 }
+  ],
+  "presets": [{ "name": "Collection Page" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="bc-sep">/</span>
+    {%- if collection.handle != 'all' -%}
+      <a href="/collections/all">Shop</a>
+      <span class="bc-sep">/</span>
+    {%- endif -%}
+    <span class="bc-cur">{{ collection.title }}</span>
+  </nav>
+
+  {%- if section.settings.show_banner -%}
+  <div class="shop-banner" role="banner">
+    <div class="shop-banner-content">
+      <div class="shop-banner-eyebrow">
+        <span class="shop-banner-eyebrow-dot"></span>
+        FLOW3R
+        <span class="shop-banner-eyebrow-dot"></span>
+      </div>
+      <h1 class="shop-banner-h">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <p class="shop-banner-sub">{{ collection.description | strip_html | truncate: 110 }}</p>
+      {%- else -%}
+        <p class="shop-banner-sub">{{ section.settings.banner_sub }}</p>
+      {%- endif -%}
+    </div>
+    <div class="shop-banner-art" aria-hidden="true">
+      <svg width="38" height="110" viewBox="0 0 40 130" fill="none">
+        <rect x="13" y="6" width="14" height="66" rx="7" fill="rgba(255,255,255,.28)"/>
+        <path d="M6 78 Q3 106 1 113 L1 117 Q1 119 4 119 L36 119 Q39 119 39 117 L39 113 Q37 106 34 78Z" fill="rgba(255,255,255,.2)"/>
+      </svg>
+      <svg width="64" height="150" viewBox="0 0 70 160" fill="none">
+        <ellipse cx="35" cy="96" rx="29" ry="36" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.15)" stroke-width="1"/>
+        <rect x="26" y="10" width="18" height="56" rx="9" fill="rgba(255,255,255,.26)"/>
+        <rect x="26" y="8" width="18" height="6" rx="3" fill="rgba(255,255,255,.3)"/>
+      </svg>
+      <svg width="30" height="120" viewBox="0 0 30 140" fill="none">
+        <rect x="8" y="4" width="14" height="100" rx="7" fill="rgba(255,255,255,.22)"/>
+        <ellipse cx="15" cy="108" rx="13" ry="6" fill="rgba(255,255,255,.16)"/>
+      </svg>
+    </div>
+  </div>
+  {%- endif -%}
+
+  <div class="shop-controls" role="navigation" aria-label="Filter products">
+    <div class="cat-tabs" role="tablist" aria-label="Product categories">
+      <a href="/collections/all" class="cat-tab{% if collection.handle == 'all' %} active{% endif %}" role="tab">All</a>
+      <a href="/collections/beaker-bongs" class="cat-tab{% if collection.handle == 'beaker-bongs' %} active{% endif %}" role="tab">Beaker Bongs</a>
+      <a href="/collections/cat-collection" class="cat-tab{% if collection.handle == 'cat-collection' %} active{% endif %}" role="tab">Cat Bongs</a>
+      <a href="/collections/dab-rigs" class="cat-tab{% if collection.handle == 'dab-rigs' %} active{% endif %}" role="tab">Dab Rigs</a>
+      <a href="/collections/rolling-trays" class="cat-tab{% if collection.handle == 'rolling-trays' %} active{% endif %}" role="tab">Rolling Trays</a>
+      <a href="/collections/grinders" class="cat-tab{% if collection.handle == 'grinders' %} active{% endif %}" role="tab">Grinders</a>
+      <a href="/collections/cones-papers" class="cat-tab{% if collection.handle == 'cones-papers' %} active{% endif %}" role="tab">Cones &amp; Papers</a>
+      <a href="/collections/tips-filters" class="cat-tab{% if collection.handle == 'tips-filters' %} active{% endif %}" role="tab">Tips &amp; Filters</a>
+      <a href="/collections/tools-accessories" class="cat-tab{% if collection.handle == 'tools-accessories' %} active{% endif %}" role="tab">Tools &amp; Accessories</a>
+      <a href="/collections/bundles" class="cat-tab{% if collection.handle == 'bundles' %} active{% endif %}" role="tab">Bundles</a>
+    </div>
+    <div class="sort-row">
+      <span class="sort-label">Sort</span>
+      <select id="sort-select" class="sort-select" aria-label="Sort products" onchange="window.location = this.value">
+        <option value="?sort_by=best-selling"{% if collection.sort_by == 'best-selling' %} selected{% endif %}>Best Sellers</option>
+        <option value="?sort_by=price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>Price: Low → High</option>
+        <option value="?sort_by=price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>Price: High → Low</option>
+        <option value="?sort_by=title-ascending"{% if collection.sort_by == 'title-ascending' %} selected{% endif %}>A → Z</option>
+      </select>
+    </div>
+  </div>
+
+  {%- if collection.handle == 'beaker-bongs' -%}
+  <div class="bong-subs show" id="bong-subs" role="group" aria-label="Beaker bong styles">
+    <a href="/collections/beaker-bongs" class="sub-tab{% unless current_tags %} active{% endunless %}">All</a>
+    <a href="/collections/beaker-bongs/beaker" class="sub-tab{% if current_tags contains 'beaker' %} active{% endif %}">Classic Beaker</a>
+    <a href="/collections/beaker-bongs/straight-tube" class="sub-tab{% if current_tags contains 'straight-tube' %} active{% endif %}">Straight Tube</a>
+    <a href="/collections/beaker-bongs/recycler" class="sub-tab{% if current_tags contains 'recycler' %} active{% endif %}">Recycler</a>
+    <a href="/collections/beaker-bongs/bubbler" class="sub-tab{% if current_tags contains 'bubbler' %} active{% endif %}">Bubbler</a>
+  </div>
+  {%- endif -%}
+
+  <div class="shop-body">
+    <div class="shop-meta">
+      <span class="shop-cat-label">{{ collection.title }}</span>
+      {%- if collection.products_count > 0 -%}
+        <span class="shop-count">{{ collection.products_count }} product{{ collection.products_count | pluralize: '', 's' }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if collection.products.size > 0 -%}
+      <div class="prod-grid" role="list" aria-label="{{ collection.title }} products">
+        {%- paginate collection.products by section.settings.products_per_page -%}
+          {%- for product in collection.products -%}
+            <div role="listitem">
+              {%- render 'product-card', product: product -%}
+            </div>
+          {%- endfor -%}
+
+          {%- if paginate.pages > 1 -%}
+            <div class="shop-pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="shop-pag-btn" aria-label="Previous page">‹</a>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" class="shop-pag-btn">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}
+                  <span class="shop-pag-btn active" aria-current="page">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="shop-pag-btn dim">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="shop-pag-btn" aria-label="Next page">›</a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+    {%- else -%}
+      <div class="collection-empty">
+        <h3>Coming Soon</h3>
+        <p>We're adding products to this collection. Check back soon — or browse everything we have.</p>
+        <a href="/collections/all" class="btn btn-dk" style="margin-top:24px;display:inline-flex">Browse All Products</a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>

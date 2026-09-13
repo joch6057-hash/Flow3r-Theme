@@ -1,0 +1,55 @@
+{% schema %}
+{
+  "name": "Article",
+  "settings": [],
+  "presets": [{ "name": "Article" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="bc-sep">/</span>
+    <a href="{{ blog.url }}">{{ blog.title }}</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-cur">{{ article.title }}</span>
+  </nav>
+
+  <div class="article-wrap">
+    {%- if article.tags.size > 0 -%}
+      <div class="article-tag">{{ article.tags.first | replace: '-', ' ' | capitalize }}</div>
+    {%- endif -%}
+
+    <h1 class="article-title">{{ article.title }}</h1>
+
+    <div class="article-meta">
+      <span>{{ article.published_at | date: "%B %d, %Y" }}</span>
+      {%- assign word_count = article.content | strip_html | split: ' ' | size -%}
+      {%- assign read_time = word_count | divided_by: 200 | plus: 1 -%}
+      <span class="article-meta-sep">·</span>
+      <span>{{ read_time }} min read</span>
+    </div>
+
+    {%- if article.image -%}
+      <div class="article-hero-img">
+        <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.image.alt | escape }}" loading="eager" width="1200" style="width:100%;display:block">
+      </div>
+    {%- endif -%}
+
+    <div class="article-body rte">
+      {{ article.content }}
+    </div>
+
+    {%- if article.tags.size > 0 -%}
+      <div class="article-tags">
+        {%- for tag in article.tags -%}
+          <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-tag-chip">{{ tag | replace: '-', ' ' | capitalize }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="article-back">
+      <a href="{{ blog.url }}" class="article-back-link">← Back to {{ blog.title }}</a>
+    </div>
+  </div>
+</div>

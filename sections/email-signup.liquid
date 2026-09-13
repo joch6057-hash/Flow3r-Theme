@@ -1,0 +1,36 @@
+{% schema %}
+{
+  "name": "Email Signup",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Stay in the Loop." },
+    { "type": "text", "id": "subtext", "label": "Subtext", "default": "New drops, exclusive deals, and early access — straight to your inbox. No spam, unsubscribe anytime." },
+    { "type": "text", "id": "placeholder", "label": "Input Placeholder", "default": "your@email.com" },
+    { "type": "text", "id": "btn_text", "label": "Button Text", "default": "Subscribe" },
+    { "type": "text", "id": "legal", "label": "Legal Note", "default": "Adults 21+ only · Unsubscribe anytime" }
+  ],
+  "presets": [{ "name": "Email Signup" }]
+}
+{% endschema %}
+
+<section class="email-section">
+  <h2 class="email-h">{{ section.settings.heading }}</h2>
+  <p class="email-p">{{ section.settings.subtext }}</p>
+  {%- form 'customer', id: 'email-signup-form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <input type="hidden" name="contact[accepts_marketing]" value="true">
+    <div class="email-form">
+      <input class="email-input"
+             type="email"
+             name="contact[email]"
+             placeholder="{{ section.settings.placeholder }}"
+             aria-label="Email address"
+             autocomplete="email"
+             required>
+      <button type="submit" class="email-submit">{{ section.settings.btn_text }}</button>
+    </div>
+    {%- if form.posted_successfully? -%}
+      <p style="margin-top:12px;color:var(--gdk);font-weight:600;font-size:14px">You're in! Welcome to the FLOW3R family. 🌿</p>
+    {%- endif -%}
+  {%- endform -%}
+  <p class="email-note">{{ section.settings.legal }}</p>
+</section>

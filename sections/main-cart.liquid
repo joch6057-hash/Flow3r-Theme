@@ -1,0 +1,803 @@
+{% comment %}
+  sections/main-cart.liquid
+  FLOW3R Cart Page v4
+  - FIX: title uses item.product.title (was item.product_title which returned empty)
+  - FIX: JS fallback fills empty titles from /cart.js
+  - DESIGN: green panel now stretches to match items column height
+{% endcomment %}
+
+<style>
+.cart-pg {
+  background: #fff;
+  width: 100%;
+  padding-top: 140px;
+  padding-bottom: 88px;
+  font-family: 'Neue Montreal', system-ui, sans-serif;
+  color: #0d0d0d;
+}
+.cp-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.cp-header { margin-bottom: 28px; }
+.cp-h1 {
+  font-size: clamp(30px, 3.6vw, 42px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: #0d0d0d;
+  line-height: 1.05;
+  margin: 0 0 6px;
+}
+.cp-count {
+  font-size: 13px;
+  color: #888;
+  letter-spacing: 0.02em;
+}
+
+.cp-free-ship {
+  background: #f4f4f4;
+  border-radius: 999px;
+  padding: 13px 28px 15px;
+  max-width: 540px;
+  margin: 0 auto 48px;
+}
+.cp-free-ship-text {
+  font-size: 12px;
+  text-align: center;
+  color: #666;
+  margin-bottom: 9px;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+.cp-free-ship-text strong { color: #245034; font-weight: 600; }
+.cp-free-ship-track {
+  height: 2px;
+  background: #dcdcdc;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cp-free-ship-fill {
+  height: 100%;
+  background: #245034;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* ── CHANGED: align-items stretch so green panel matches items column height ── */
+.cp-cols {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 56px;
+  align-items: stretch;
+}
+.cp-left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cp-col-headers {
+  display: grid;
+  grid-template-columns: 110px 1fr 130px 90px;
+  gap: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid #0d0d0d;
+}
+.cp-col-headers span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #555;
+}
+.cp-ch-product { grid-column: 1 / 3; }
+.cp-ch-qty { text-align: center; }
+.cp-ch-total { text-align: right; }
+
+.cp-list { display: flex; flex-direction: column; }
+
+.cp-item {
+  display: grid;
+  grid-template-columns: 110px 1fr 130px 90px;
+  gap: 24px;
+  align-items: center;
+  padding: 26px 0;
+  border-bottom: 1px solid #ebebeb;
+}
+.cp-item-img-link { display: block; text-decoration: none; }
+.cp-item-img-link:hover .cp-item-img { opacity: 0.85; }
+.cp-item-img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #f2f2f2;
+  display: block;
+  transition: opacity 0.2s;
+}
+.cp-item-img-ph {
+  width: 110px;
+  height: 110px;
+  border-radius: 6px;
+  background: #f2f2f2;
+}
+
+.cp-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.cp-item-color {
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+.cp-item-remove {
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 10.5px;
+  cursor: pointer;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0;
+  font-family: inherit;
+  text-align: left;
+  width: fit-content;
+  transition: color 0.15s;
+  margin-top: 8px;
+}
+.cp-item-remove:hover { color: #245034; }
+
+.cp-item-qty-col {
+  display: flex;
+  justify-content: center;
+}
+.cp-qty-ctrl {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d8d8d8;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 38px;
+  width: 116px;
+}
+.cp-qty-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  color: #0d0d0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  font-family: inherit;
+  padding: 0;
+}
+.cp-qty-btn:hover { background: #f4f4f4; }
+.cp-qty-val {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0d0d0d;
+}
+
+.cp-item-price {
+  font-size: 15px;
+  font-weight: 500;
+  color: #0d0d0d;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cp-empty {
+  padding: 80px 0;
+  text-align: center;
+}
+.cp-empty-icon {
+  font-size: 48px;
+  margin-bottom: 18px;
+  opacity: 0.5;
+}
+.cp-empty p {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 28px;
+}
+.cp-empty-btn {
+  display: inline-block;
+  background: #245034;
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.cp-ymal {
+  margin-top: 64px;
+  padding-top: 40px;
+  border-top: 1px solid #ebebeb;
+}
+.cp-ymal-h {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 24px;
+}
+.cp-ymal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.cp-ymal-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #ebebeb;
+  border-radius: 10px;
+  padding: 14px 14px 16px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s cubic-bezier(0.22,1,0.36,1);
+}
+.cp-ymal-card:hover {
+  border-color: #245034;
+  box-shadow: 0 8px 24px rgba(36,80,52,0.08);
+  transform: translateY(-2px);
+}
+.cp-ymal-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #f6f5f2;
+  display: block;
+  margin-bottom: 12px;
+  transition: opacity 0.2s;
+}
+.cp-ymal-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0d0d0d;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  margin: 0 2px 3px;
+}
+.cp-ymal-price {
+  font-size: 13px;
+  color: #777;
+  margin: 0 2px;
+}
+
+/* ── CHANGED: removed position:sticky so the panel can stretch to match items column ── */
+.cp-summary {
+  background: #245034;
+  border-radius: 8px;
+  padding: 34px 30px;
+  color: #fff;
+}
+
+.cp-total-hero {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+.cp-total-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 6px;
+}
+.cp-total-val {
+  font-size: 34px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.cp-heading {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 14px;
+}
+
+.cp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 11px;
+  font-size: 14px;
+}
+.cp-row-label { color: rgba(255,255,255,0.78); }
+.cp-row-val { color: #fff; font-weight: 500; }
+.cp-row-val.muted { color: rgba(255,255,255,0.55); font-weight: 400; font-size: 13px; }
+
+.cp-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  margin: 18px 0;
+}
+
+.cp-discount-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.cp-discount-input {
+  flex: 1;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 5px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #0d0d0d;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-width: 0;
+}
+.cp-discount-input::placeholder { color: #aaa; }
+.cp-discount-input:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+}
+.cp-discount-apply {
+  height: 42px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.cp-discount-apply:hover { background: #fff; color: #245034; border-color: #fff; }
+.cp-discount-msg {
+  font-size: 12px;
+  color: #a8d4b5;
+  min-height: 18px;
+  margin-bottom: 4px;
+}
+.cp-discount-msg.err { color: #ff9e9e; }
+
+.cp-checkout-btn {
+  display: block;
+  width: 100%;
+  background: #fff;
+  color: #245034;
+  text-align: center;
+  padding: 16px;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: opacity 0.15s, transform 0.15s;
+  margin-top: 18px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+.cp-checkout-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.cp-continue {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: color 0.15s;
+  letter-spacing: 0.01em;
+}
+.cp-continue:hover { color: #fff; }
+.cp-note {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  margin-top: 14px;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 1080px) {
+  .cp-cols { grid-template-columns: 1fr 360px; gap: 40px; }
+}
+
+@media (max-width: 960px) {
+  .cp-cols { grid-template-columns: 1fr; gap: 32px; align-items: start; }
+  .cp-summary { padding: 30px 26px; }
+  .cp-ymal-grid { gap: 14px; }
+}
+
+@media (max-width: 700px) {
+  .cart-pg { padding-top: 110px; padding-bottom: 64px; }
+  .cp-inner { padding: 0 20px; }
+  .cp-col-headers,
+  .cp-item {
+    grid-template-columns: 80px 1fr 100px 78px;
+    gap: 14px;
+  }
+  .cp-item-img,
+  .cp-item-img-ph { width: 80px; height: 80px; }
+  .cp-qty-ctrl { width: 92px; height: 34px; }
+  .cp-qty-btn { width: 30px; height: 34px; }
+  .cp-h1 { font-size: 26px; }
+  .cp-free-ship { max-width: 100%; }
+}
+
+@media (max-width: 500px) {
+  .cp-inner { padding: 0 16px; }
+  .cp-col-headers { display: none; }
+  .cp-item {
+    grid-template-columns: 72px 1fr auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "img info price"
+      "img qty  price";
+    gap: 4px 14px;
+    align-items: start;
+    padding: 22px 0;
+  }
+  .cp-item-img-link { grid-area: img; }
+  .cp-item-info { grid-area: info; }
+  .cp-item-qty-col {
+    grid-area: qty;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+  .cp-item-price {
+    grid-area: price;
+    font-size: 15px;
+    align-self: start;
+  }
+  .cp-item-img,
+  .cp-item-img-ph { width: 72px; height: 72px; }
+  .cp-ymal-grid { gap: 10px; }
+  .cp-ymal-title { font-size: 12px; }
+  .cp-summary { padding: 26px 22px; }
+  .cp-total-val { font-size: 28px; }
+}
+</style>
+
+
+{% assign fs_threshold = 7500 %}
+{% if cart.total_price >= fs_threshold %}
+  {% assign fs_progress = 100 %}
+{% else %}
+  {% assign fs_progress = cart.total_price | times: 100 | divided_by: fs_threshold %}
+  {% assign fs_remaining = fs_threshold | minus: cart.total_price | money %}
+{% endif %}
+
+
+<div class="cart-pg">
+  <div class="cp-inner">
+
+    <div class="cp-header">
+      <h1 class="cp-h1">Your Cart</h1>
+      <div class="cp-count">{{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</div>
+    </div>
+
+    <div class="cp-free-ship">
+      <div class="cp-free-ship-text" id="fs-msg">
+        {% if cart.total_price >= fs_threshold %}
+          <strong>You've unlocked free shipping.</strong>
+        {% else %}
+          Add <strong>{{ fs_remaining }}</strong> more for free shipping.
+        {% endif %}
+      </div>
+      <div class="cp-free-ship-track">
+        <div class="cp-free-ship-fill" id="fs-fill" style="width:{{ fs_progress }}%"></div>
+      </div>
+    </div>
+
+    {% if cart.item_count == 0 %}
+
+      <div class="cp-empty">
+        <p>Your cart is empty.</p>
+        <a href="/pages/shop" class="cp-empty-btn">Browse Products →</a>
+      </div>
+
+    {% else %}
+
+      <div class="cp-cols">
+
+        <div class="cp-left">
+
+          <div class="cp-col-headers">
+            <span class="cp-ch-product">Product</span>
+            <span class="cp-ch-qty">Quantity</span>
+            <span class="cp-ch-total">Total</span>
+          </div>
+
+          <div class="cp-list" id="cp-list">
+            {% for item in cart.items %}
+              <div class="cp-item" data-key="{{ item.key }}" data-product-handle="{{ item.product.handle }}">
+
+                <a href="{{ item.url }}" class="cp-item-img-link">
+                  {% if item.image %}
+                    <img class="cp-item-img" src="{{ item.image | image_url: width: 240 }}" alt="{{ item.product.title | escape }}" loading="lazy">
+                  {% else %}
+                    <div class="cp-item-img-ph"></div>
+                  {% endif %}
+                </a>
+
+                <div class="cp-item-info">
+
+                  {%- comment -%} Title — uses item.product.title (item.product_title returns empty in this store) {%- endcomment -%}
+                  <a href="{{ item.url }}"
+                     class="cp-item-title"
+                     style="display:block !important; text-decoration:none !important; color:#0d0d0d !important; font-size:17px !important; font-weight:500 !important; line-height:1.3 !important; letter-spacing:-0.01em !important; font-family:'Neue Montreal',system-ui,sans-serif !important; visibility:visible !important; opacity:1 !important; margin:0 !important; padding:0 !important; background:transparent !important;">{{ item.product.title }}</a>
+
+                  {% unless item.variant.title == 'Default Title' %}
+                    <span class="cp-item-color"
+                          style="display:block !important; color:#888 !important; font-size:13px !important; visibility:visible !important; opacity:1 !important;">{{ item.variant.title }}</span>
+                  {% endunless %}
+
+                  <button class="cp-item-remove" data-key="{{ item.key }}">Remove</button>
+                </div>
+
+                <div class="cp-item-qty-col">
+                  <div class="cp-qty-ctrl">
+                    <button class="cp-qty-btn cp-qty-minus" data-key="{{ item.key }}" aria-label="Decrease quantity">−</button>
+                    <span class="cp-qty-val" id="qty-{{ item.key | replace: ':', '_' }}">{{ item.quantity }}</span>
+                    <button class="cp-qty-btn cp-qty-plus" data-key="{{ item.key }}" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+
+                <div class="cp-item-price" id="lp-{{ item.key | replace: ':', '_' }}">
+                  {{ item.line_price | money }}
+                </div>
+
+              </div>
+            {% endfor %}
+          </div>
+
+          {% assign cart_pids = cart.items | map: 'product_id' %}
+          {% assign fp_prods = collections['frontpage'].products %}
+          {% assign ymal_shown = 0 %}
+
+          <div class="cp-ymal">
+            <div class="cp-ymal-h">You Might Also Like</div>
+            <div class="cp-ymal-grid">
+              {% for p in fp_prods %}
+                {% unless cart_pids contains p.id %}
+                  {% if ymal_shown < 3 %}
+                    <a href="{{ p.url }}" class="cp-ymal-card">
+                      {% if p.featured_image %}
+                        <img class="cp-ymal-img" src="{{ p.featured_image | image_url: width: 400 }}" alt="{{ p.title | escape }}" loading="lazy">
+                      {% else %}
+                        <div class="cp-ymal-img"></div>
+                      {% endif %}
+                      <div class="cp-ymal-title" style="color:#0d0d0d !important;">{{ p.title }}</div>
+                      <div class="cp-ymal-price">{{ p.price_min | money }}</div>
+                    </a>
+                    {% assign ymal_shown = ymal_shown | plus: 1 %}
+                  {% endif %}
+                {% endunless %}
+              {% endfor %}
+              {% if ymal_shown == 0 %}
+                {% for p in fp_prods limit: 3 %}
+                  <a href="{{ p.url }}" class="cp-ymal-card">
+                    {% if p.featured_image %}
+                      <img class="cp-ymal-img" src="{{ p.featured_image | image_url: width: 400 }}" alt="{{ p.title | escape }}" loading="lazy">
+                    {% else %}
+                      <div class="cp-ymal-img"></div>
+                    {% endif %}
+                    <div class="cp-ymal-title" style="color:#0d0d0d !important;">{{ p.title }}</div>
+                    <div class="cp-ymal-price">{{ p.price_min | money }}</div>
+                  </a>
+                {% endfor %}
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="cp-summary">
+
+          <div class="cp-total-hero">
+            <div class="cp-total-label">Total</div>
+            <div class="cp-total-val" id="os-total">{{ cart.total_price | money }}</div>
+          </div>
+
+          <div class="cp-heading">Order Summary</div>
+
+          <div class="cp-row">
+            <span class="cp-row-label">Subtotal</span>
+            <span class="cp-row-val" id="os-subtotal">{{ cart.total_price | money }}</span>
+          </div>
+          <div class="cp-row">
+            <span class="cp-row-label">Shipping &amp; taxes</span>
+            <span class="cp-row-val muted">Calculated at checkout</span>
+          </div>
+
+          <div class="cp-divider"></div>
+
+          <div class="cp-discount-row">
+            <input class="cp-discount-input" type="text" id="disc-input" placeholder="Discount code" autocomplete="off" spellcheck="false">
+            <button class="cp-discount-apply" onclick="cpApplyDiscount()">Apply</button>
+          </div>
+          <div class="cp-discount-msg" id="disc-msg"></div>
+
+          <a href="/checkout" class="cp-checkout-btn" id="checkout-link">Proceed to Checkout →</a>
+          <a href="/pages/shop" class="cp-continue">Continue Shopping</a>
+          <div class="cp-note">Taxes &amp; shipping calculated at checkout</div>
+
+        </div>
+
+      </div>
+
+    {% endif %}
+
+  </div>
+</div>
+
+
+<script>
+(function () {
+  var FS_CENTS = 7500;
+
+  function money(cents) {
+    return '$' + (cents / 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function updateBar(total) {
+    var fill = document.getElementById('fs-fill');
+    var msg  = document.getElementById('fs-msg');
+    if (!fill || !msg) return;
+    if (total >= FS_CENTS) {
+      fill.style.width = '100%';
+      msg.innerHTML = '<strong>You\'ve unlocked free shipping.</strong>';
+    } else {
+      fill.style.width = Math.round((total / FS_CENTS) * 100) + '%';
+      msg.innerHTML = 'Add <strong>' + money(FS_CENTS - total) + '</strong> more for free shipping.';
+    }
+  }
+
+  function updateTotals(cart) {
+    var sub = document.getElementById('os-subtotal');
+    var tot = document.getElementById('os-total');
+    if (sub) sub.textContent = money(cart.total_price);
+    if (tot) tot.textContent = money(cart.total_price);
+    updateBar(cart.total_price);
+    cart.items.forEach(function (item) {
+      var k  = item.key.replace(':', '_');
+      var lp = document.getElementById('lp-' + k);
+      var q  = document.getElementById('qty-' + k);
+      if (lp) lp.textContent = money(item.line_price);
+      if (q)  q.textContent  = item.quantity;
+    });
+  }
+
+  /* ── TITLE FALLBACK ──
+     If any cart item's title rendered empty in Liquid, fetch /cart.js
+     and fill in the missing titles from the JSON response.
+     This is the safety net that guarantees titles appear no matter what. */
+  async function ensureTitlesFilled() {
+    try {
+      var titleEls = document.querySelectorAll('.cp-item-title');
+      if (!titleEls.length) return;
+
+      var anyEmpty = false;
+      titleEls.forEach(function (el) {
+        if (!el.textContent || !el.textContent.trim()) anyEmpty = true;
+      });
+      if (!anyEmpty) return;
+
+      var r = await fetch('/cart.js');
+      var cart = await r.json();
+
+      var titleMap = {};
+      cart.items.forEach(function (it) {
+        titleMap[it.key] = it.product_title || it.title || '';
+      });
+
+      titleEls.forEach(function (el) {
+        if (el.textContent && el.textContent.trim()) return;
+        var row = el.closest('.cp-item');
+        if (!row) return;
+        var key = row.getAttribute('data-key');
+        if (key && titleMap[key]) {
+          el.textContent = titleMap[key];
+        }
+      });
+    } catch (e) {
+      console.error('Title fallback failed', e);
+    }
+  }
+  ensureTitlesFilled();
+
+  async function changeQty(key, delta) {
+    var k    = key.replace(':', '_');
+    var qEl  = document.getElementById('qty-' + k);
+    var cur  = qEl ? parseInt(qEl.textContent, 10) : 1;
+    var next = Math.max(0, cur + delta);
+    if (next === cur) return;
+    if (next === 0) { removeItem(key); return; }
+    try {
+      var r    = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: next })
+      });
+      var cart = await r.json();
+      updateTotals(cart);
+      if (window.Cart && typeof window.Cart.refreshCount === 'function') window.Cart.refreshCount();
+    } catch (e) { console.error(e); }
+  }
+
+  async function removeItem(key) {
+    try {
+      var r    = await fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: key, quantity: 0 })
+      });
+      var cart = await r.json();
+      var row  = document.querySelector('.cp-item[data-key="' + key + '"]');
+      if (row) row.remove();
+      updateTotals(cart);
+      if (window.Cart && typeof window.Cart.refreshCount === 'function') window.Cart.refreshCount();
+      if (cart.item_count === 0) location.reload();
+    } catch (e) { console.error(e); }
+  }
+
+  document.querySelectorAll('.cp-qty-minus').forEach(function (btn) {
+    btn.addEventListener('click', function () { changeQty(btn.dataset.key, -1); });
+  });
+  document.querySelectorAll('.cp-qty-plus').forEach(function (btn) {
+    btn.addEventListener('click', function () { changeQty(btn.dataset.key, 1); });
+  });
+  document.querySelectorAll('.cp-item-remove').forEach(function (btn) {
+    btn.addEventListener('click', function () { removeItem(btn.dataset.key); });
+  });
+
+  window.cpApplyDiscount = function () {
+    var code = (document.getElementById('disc-input').value || '').trim();
+    var msg  = document.getElementById('disc-msg');
+    var link = document.getElementById('checkout-link');
+    if (!code) {
+      msg.textContent = 'Enter a discount code first.';
+      msg.className = 'cp-discount-msg err';
+      return;
+    }
+    link.href = '/checkout?discount=' + encodeURIComponent(code);
+    msg.textContent = 'Code saved — applied at checkout.';
+    msg.className = 'cp-discount-msg';
+  };
+
+  var di = document.getElementById('disc-input');
+  if (di) di.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') window.cpApplyDiscount();
+  });
+
+})();
+</script>
+
+
+{% schema %}
+{ "name": "Cart", "settings": [], "presets": [{ "name": "Cart" }] }
+{% endschema %}

@@ -1,0 +1,170 @@
+{%- comment -%}
+  shop-editorial.liquid — FLOW3R Shop v7
+  White images framed. Green proof band for contrast. Products link to
+  their landing pages (no inline buy). System per shop-editorial.css.
+{%- endcomment -%}
+
+{{ 'shop-editorial.css' | asset_url | stylesheet_tag }}
+
+{%- assign wp = all_products['8-flow3r-water-pipe'] -%}
+{%- assign cat_col = collections['cat-collection'] -%}
+{%- assign wpv = wp.selected_or_first_available_variant -%}
+{%- if wpv == blank -%}{%- assign wpv = wp.variants.first -%}{%- endif -%}
+
+<div class="shop-ed page-top">
+
+  <nav class="shop-ed-bc" aria-label="Breadcrumb">
+    <a href="/">Home</a><span class="sep">/</span><span class="cur">Shop</span>
+  </nav>
+
+  {%- comment -%} HERO {%- endcomment -%}
+  <section class="shop-ed-hero reveal" aria-labelledby="shopEdH1">
+    <h1 id="shopEdH1" class="shop-ed-vh">Shop FLOW3R</h1>
+    {%- if section.settings.hero_image != blank -%}
+      <img class="shop-ed-hero-img" src="{{ section.settings.hero_image | image_url: width: 2200 }}"
+           srcset="{{ section.settings.hero_image | image_url: width: 1200 }} 1200w, {{ section.settings.hero_image | image_url: width: 2200 }} 2200w"
+           sizes="100vw" width="2200" height="1200" alt="FLOW3R 8-inch beaker lineup — three colorways" loading="eager">
+    {%- else -%}
+      <img class="shop-ed-hero-img" src="{{ 'beaker_rims_lineup.png' | asset_url }}"
+           width="2200" height="1200" alt="FLOW3R 8-inch beaker lineup — three colorways" loading="eager">
+    {%- endif -%}
+    <div class="shop-ed-hero-content">
+      <div class="shop-ed-hero-inner">
+        <span class="shop-ed-eyebrow">{{ section.settings.hero_eyebrow | default: 'The FLOW3R Lineup' }}</span>
+        <p class="shop-ed-hero-lead">{{ section.settings.hero_lead | default: "It's time for an upgrade." }}</p>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} WATER PIPE — links to landing page {%- endcomment -%}
+  {%- if wp != blank -%}
+  <section class="shop-ed-sec shop-ed-wp reveal" aria-labelledby="shopEdWpH">
+    <div class="shop-ed-in shop-ed-wp-in">
+      <a class="shop-ed-frame shop-ed-wp-frame" href="{{ wp.url }}" aria-label="{{ wp.title | escape }}">
+        {%- if section.settings.wp_image != blank -%}
+          <img class="shop-ed-wp-img" src="{{ section.settings.wp_image | image_url: width: 1000 }}" width="1000" height="1250" alt="{{ wp.title | escape }}" loading="lazy">
+        {%- elsif wp.featured_image != blank -%}
+          <img class="shop-ed-wp-img" src="{{ wp.featured_image | image_url: width: 1000 }}" width="1000" height="1250" alt="{{ wp.title | escape }}" loading="lazy">
+        {%- endif -%}
+      </a>
+      <div class="shop-ed-wp-content">
+        <span class="shop-ed-eyebrow">{{ section.settings.wp_eyebrow | default: '01 — Now Available' }}</span>
+        <h2 id="shopEdWpH" class="shop-ed-h">{{ wp.title }}</h2>
+        <div class="shop-ed-wp-body">
+          {{ section.settings.wp_body | default: '<p>Clear borosilicate beaker. Ice pinch. Three colored rims — pink, blue, green. The piece that lives on the shelf, not in a drawer.</p>' }}
+        </div>
+        <div class="shop-ed-price-row">
+          <span class="shop-ed-price">{{ wpv.price | money }}</span>
+          {%- if wp.variants.size > 1 -%}<span class="shop-ed-vnote">{{ wp.variants.size }} colorways</span>{%- endif -%}
+        </div>
+        <a class="shop-ed-viewlink" href="{{ wp.url }}">View the water pipe →</a>
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} PROOF — green band {%- endcomment -%}
+  <section class="shop-ed-proof reveal" aria-labelledby="shopEdProofH">
+    <div class="shop-ed-proof-in">
+      <span class="shop-ed-eyebrow">The standard</span>
+      <h2 id="shopEdProofH" class="shop-ed-vh">Why FLOW3R</h2>
+      <div class="shop-ed-proof-grid">
+        <div class="shop-ed-proof-item"><div class="shop-ed-proof-label">Borosilicate only</div><div class="shop-ed-proof-val">Lab-grade glass. Not soft glass, ever.</div></div>
+        <div class="shop-ed-proof-item"><div class="shop-ed-proof-label">California tested</div><div class="shop-ed-proof-val">Every piece checked before it ships.</div></div>
+        <div class="shop-ed-proof-item"><div class="shop-ed-proof-label">Discreet shipping</div><div class="shop-ed-proof-val">Plain, unbranded box. No hint of contents.</div></div>
+        <div class="shop-ed-proof-item"><div class="shop-ed-proof-label">1-year guarantee</div><div class="shop-ed-proof-val">Breaks in normal use? We replace it.</div></div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} CAT COLLECTION — framed tiles, links to landing pages {%- endcomment -%}
+  {%- if cat_col != blank and cat_col.products.size > 0 -%}
+  <section class="shop-ed-sec shop-ed-cats reveal" aria-labelledby="shopEdCatH">
+    <div class="shop-ed-in">
+      <span class="shop-ed-eyebrow">{{ section.settings.cat_eyebrow | default: 'The Cat Collection' }}</span>
+      <h2 id="shopEdCatH" class="shop-ed-vh">The Cat Collection</h2>
+      <div class="shop-ed-cats-intro">
+        {{ section.settings.cat_intro | default: '<p>Alley Cats by Hemper. A portion of Cat Collection sales is donated to local California cat rescue.</p>' }}
+      </div>
+      <div class="shop-ed-grid">
+        {%- for product in cat_col.products limit: 6 -%}
+          <a class="shop-ed-tile" href="{{ product.url }}">
+            <div class="shop-ed-tile-frame">
+              {%- if product.featured_image != blank -%}
+                <img class="shop-ed-tile-img" src="{{ product.featured_image | image_url: width: 800 }}"
+                     srcset="{{ product.featured_image | image_url: width: 500 }} 500w, {{ product.featured_image | image_url: width: 800 }} 800w"
+                     sizes="(max-width:900px) 50vw, 33vw" width="800" height="1000" alt="{{ product.title | escape }}" loading="lazy">
+              {%- endif -%}
+            </div>
+            <div class="shop-ed-tile-name">{{ product.title }}</div>
+            <div class="shop-ed-tile-meta">{{ product.price | money }}{%- unless product.available -%} <span class="so">· Sold out</span>{%- endunless -%}</div>
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+  {%- endif -%}
+
+  {%- comment -%} ON THE WAY {%- endcomment -%}
+  <section class="shop-ed-sec shop-ed-line shop-ed-soon reveal">
+    <div class="shop-ed-in">
+      <span class="shop-ed-eyebrow">{{ section.settings.cs_eyebrow | default: 'Coming soon' }}</span>
+      <h2 class="shop-ed-sub-h">On the way.</h2>
+      <div class="shop-ed-soon-grid">
+        <div class="shop-ed-soon-item"><h3>{{ section.settings.cs1_title | default: 'Grinder' }}</h3><p>{{ section.settings.cs1_desc | default: 'Four-piece aluminum. Diamond-cut teeth. Kief catcher.' }}</p></div>
+        <div class="shop-ed-soon-item"><h3>{{ section.settings.cs2_title | default: 'Rolling Tray' }}</h3><p>{{ section.settings.cs2_desc | default: 'Raised edges. Clean finish. Built for the coffee table.' }}</p></div>
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} NEWSLETTER {%- endcomment -%}
+  <section class="shop-ed-news reveal" aria-labelledby="shopEdNewsH">
+    <div class="shop-ed-news-in">
+      <span class="shop-ed-eyebrow">{{ section.settings.news_eyebrow | default: 'More on the way' }}</span>
+      <h2 id="shopEdNewsH">{{ section.settings.news_heading | default: 'Be first to the next drop.' }}</h2>
+      <p class="shop-ed-news-p">{{ section.settings.news_body | default: 'New shapes. New collabs. No spam — just the drops, before they sell out.' }}</p>
+      {%- form 'customer', class: 'shop-ed-news-form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter,shop-page">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <input type="email" name="contact[email]" required placeholder="your@email.com" class="shop-ed-news-input" aria-label="Email address">
+        <button type="submit" class="shop-ed-news-btn">Notify Me</button>
+        {%- if form.posted_successfully? -%}<p class="shop-ed-news-msg">You're on the list. Welcome to FLOW3R.</p>{%- endif -%}
+      {%- endform -%}
+      <p class="shop-ed-news-fine">21+ only · Discreet shipping · Unsubscribe anytime</p>
+    </div>
+  </section>
+
+</div>
+
+{% schema %}
+{
+  "name": "Shop - Editorial",
+  "tag": "section",
+  "class": "shop-editorial-section",
+  "settings": [
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "hero_eyebrow", "label": "Hero eyebrow", "default": "The FLOW3R Lineup" },
+    { "type": "text", "id": "hero_lead", "label": "Hero headline", "default": "A few things. Done right." },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image", "info": "Landscape (16:9). Leave empty to keep the hero plain." },
+    { "type": "header", "content": "Water Pipe" },
+    { "type": "text", "id": "wp_eyebrow", "label": "Eyebrow", "default": "01 — The Flagship" },
+    { "type": "image_picker", "id": "wp_image", "label": "Product image", "info": "White-background shot. Falls back to the product's featured image." },
+    { "type": "richtext", "id": "wp_body", "label": "Body copy" },
+    { "type": "header", "content": "Cat Collection" },
+    { "type": "text", "id": "cat_eyebrow", "label": "Eyebrow", "default": "The Cat Collection" },
+    { "type": "richtext", "id": "cat_intro", "label": "Intro" },
+    { "type": "header", "content": "On The Way" },
+    { "type": "text", "id": "cs_eyebrow", "label": "Eyebrow", "default": "Coming soon" },
+    { "type": "text", "id": "cs1_title", "label": "Item 1 title", "default": "Grinder" },
+    { "type": "text", "id": "cs1_desc", "label": "Item 1 line", "default": "Four-piece aluminum. Diamond-cut teeth. Kief catcher." },
+    { "type": "text", "id": "cs2_title", "label": "Item 2 title", "default": "Rolling Tray" },
+    { "type": "text", "id": "cs2_desc", "label": "Item 2 line", "default": "Raised edges. Clean finish. Built for the coffee table." },
+    { "type": "header", "content": "Newsletter" },
+    { "type": "text", "id": "news_eyebrow", "label": "Eyebrow", "default": "More on the way" },
+    { "type": "text", "id": "news_heading", "label": "Heading", "default": "Be first to the next drop." },
+    { "type": "textarea", "id": "news_body", "label": "Body", "default": "New shapes. New collabs. No spam — just the drops, before they sell out." }
+  ],
+  "presets": [ { "name": "Shop - Editorial" } ],
+  "enabled_on": { "templates": ["page"] }
+}
+{% endschema %}

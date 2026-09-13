@@ -1,0 +1,22 @@
+{% schema %}
+{
+  "name": "Custom Page",
+  "settings": [],
+  "presets": [{ "name": "Custom Page" }]
+}
+{% endschema %}
+
+<div class="page-top">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span class="bc-sep">/</span>
+    <span class="bc-cur">{{ page.title }}</span>
+  </nav>
+
+  <div style="padding:52px 44px 80px;background:var(--bg2)">
+    <div style="max-width:860px;margin:0 auto;background:#fff;border-radius:16px;padding:48px;box-shadow:0 2px 24px rgba(0,0,0,.07);border:1px solid rgba(0,0,0,.07)">
+      <h1 style="font-size:42px;font-weight:800;letter-spacing:-.02em;margin-bottom:32px;color:var(--bk)">{{ page.title }}</h1>
+      <div class="rte" style="font-size:16px;line-height:1.9;color:var(--g1)">{{ page.content }}</div>
+    </div>
+  </div>
+</div>
