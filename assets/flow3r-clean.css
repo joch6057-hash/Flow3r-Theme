@@ -1,0 +1,141 @@
+/* ══════════════════════════════════════════════════════════════
+   FLOW3R — CLEAN MODE OVERRIDE
+   Loaded AFTER flow3r.css + flow3r-nav.css.
+   - Strips cream/sand backgrounds, sets pure white throughout
+   - Restyles product card eyebrow (bold black, no more weird green)
+   - Adds hairline dividers between sections for rhythm
+   - Preserves existing dark-green sections for editorial contrast
+══════════════════════════════════════════════════════════════ */
+
+/* ── Kill cream at the variable level ── */
+:root {
+  --bg: #ffffff !important;
+  --bg2: #ffffff !important;
+  --cream: #ffffff !important;
+  --sand: #f6f6f6 !important;
+}
+
+/* ── Body to pure white ── */
+body {
+  background-color: #ffffff !important;
+}
+
+/* ── Sections that explicitly used cream become white ── */
+.home-section.bg2,
+.email-section,
+.featured-also,
+.cat-photos,
+.learn-body,
+.faq-body,
+.shop-body,
+.blog-grid {
+  background: #ffffff !important;
+}
+
+/* ── Product card eyebrow — bold black, no green ── */
+.prod-type {
+  color: #0d0d0d !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 6px;
+}
+
+/* ── Product card backgrounds — pure white ── */
+.prod-card {
+  background: #ffffff !important;
+}
+
+/* ── Product image placeholders — neutral light gray, not cream ── */
+.prod-img-wrap,
+.prod-img-placeholder {
+  background: #f6f6f6 !important;
+}
+
+/* ── Featured spec boxes — light gray, not cream ── */
+.featured-spec-box {
+  background: #f6f6f6 !important;
+}
+
+/* ── Section hairlines for rhythm where cream used to do the work ── */
+.home-section + .home-section,
+.email-section,
+.featured-also,
+.cat-photos,
+.learn-body,
+.faq-body {
+  border-top: 1px solid #f0f0ec !important;
+}
+
+/* No hairline after a dark-green section — the color change provides rhythm */
+.cat-strip + .home-section,
+.cf-charity + .home-section,
+.cf-hero + .home-section,
+.rw-hero + .home-section,
+.rw-tiers + .home-section,
+.shop-banner + .home-section,
+.shop-banner + .shop-controls {
+  border-top: none !important;
+}
+
+/* ── Cat hero gradient — keep mint but make it subtler ── */
+.cat-hero {
+  background: linear-gradient(135deg, #f4faf6 0%, #ebf4ef 100%) !important;
+}
+
+/* ── About visual block — light mint stays as an accent, not cream ── */
+.about-visual {
+  background: #f4faf6 !important;
+}
+.about-visual::before {
+  background: radial-gradient(ellipse at 50% 55%, #ebf4ef 0%, #f4faf6 100%) !important;
+}
+
+/* ── Stats blocks ── */
+.about-stat {
+  background: #ffffff !important;
+}
+
+/* ── Trust strip ── */
+.trust-strip {
+  background: #ffffff !important;
+}
+.trust-cell {
+  background: #ffffff !important;
+}
+
+/* ── Email section ── */
+.email-section::before {
+  background: radial-gradient(circle, rgba(36,80,52,.05) 0%, transparent 70%) !important;
+}
+
+/* ── FAQ trigger hover — light mint instead of cream ── */
+.faq-trigger:hover,
+.faq-trigger[aria-expanded="true"] {
+  background: #f4faf6 !important;
+}
+
+/* ── Search hint background ── */
+.search-overlay { background: rgba(0,0,0,0.5) !important; }
+
+/* ── Cart drawer roundup row ── */
+.roundup-row {
+  background: #f4faf6 !important;
+}
+/* ── Nav wordmark — heavier weight, tighter tracking ── */
+.nav-logo .nav-logo-text {
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+/* ── Image wells: neutralize mint behind all images (clean.css only patched product cards) ── */
+.product-gallery-main,
+.product-gallery-thumb,
+.cart-item-img,
+.learn-card-img,
+.blog-card-img-wrap,
+.lg-card-img,
+.lg-perc-img,
+.perc-card-img {
+  background: #f6f6f6 !important;
+}

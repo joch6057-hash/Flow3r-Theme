@@ -1,0 +1,144 @@
+/* ══════════════════════════════════════════
+   FLOW3R — Overrides
+   Nav Burst + Trust Strip + Section Fixes
+══════════════════════════════════════════ */
+
+/* Center burst — ink drop expands from link center */
+.nav-link::before {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path .2s cubic-bezier(.22, 1, .36, 1);
+}
+.nav-link:hover {
+  color: #fff;
+  transition: color 0s;
+}
+.nav-link:hover::before {
+  bottom: 0;
+  clip-path: circle(150% at 50% 50%);
+}
+
+/* Trust strip — forest green icon boxes */
+.trust-icon-wrap {
+  background: var(--gdk);
+  border-color: rgba(255,255,255,.1);
+}
+
+/* ── AGE GATE OVERRIDES ── */
+/* Light popup — site visible behind, small card */
+.age-gate {
+  background: rgba(0,0,0,0.6);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.age-gate-inner {
+  background: var(--gdk);
+  width: 100%;
+  max-width: 400px;
+  padding: 48px 40px;
+  text-align: center;
+  border-radius: 8px;
+}
+.age-gate-logo {
+  display: block;
+  margin: 0 auto 24px;
+}
+.age-gate-logo-img {
+  display: block;
+  margin: 0 auto;
+  height: 52px;
+  width: 52px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.92);
+  border-radius: 10px;
+  padding: 9px;
+}
+.age-gate-rule {
+  width: 24px;
+  height: 1px;
+  background: rgba(255,255,255,0.25);
+  margin: 0 auto 28px;
+}
+.age-gate-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.age-gate-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 32px;
+  line-height: 1.55;
+}
+.age-gate-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.age-gate-enter {
+  background: #fff;
+  color: var(--gdk);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 14px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: opacity .2s;
+  width: 100%;
+}
+.age-gate-enter:hover { opacity: 0.9; }
+.age-gate-exit {
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  transition: border-color .2s, color .2s;
+  width: 100%;
+}
+.age-gate-exit:hover { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); }
+.age-gate-legal {
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  margin-top: 20px;
+  line-height: 1.6;
+}
+.age-gate-denied {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  padding: 16px 0 4px;
+  line-height: 1.55;
+}
+
+@media (max-width: 480px) {
+  .age-gate-inner { padding: 36px 28px; }
+  .age-gate-heading { font-size: 18px; }
+}
+
+/* Paw icon in nav */
+.nav-paw { flex-shrink: 0; display: block; }
+.mob-nav-link .nav-paw { display: inline-block; vertical-align: middle; }
+.nav-link--active {
+  color: #fff;
+}
+.nav-link--active::before {
+  clip-path: circle(150% at 50% 50%);
+}
+
+
