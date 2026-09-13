@@ -1,0 +1,170 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "FLOW3R",
+    "theme_version": "1.0.0",
+    "theme_author": "FLOW3R",
+    "theme_documentation_url": "https://flow3r.shop",
+    "theme_support_url": "https://flow3r.shop"
+  },
+  {
+    "name": "Age Gate",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "age_gate_enabled",
+        "label": "Enable Age Gate",
+        "default": true,
+        "info": "Shows an age verification screen before the site loads."
+      },
+      {
+        "type": "number",
+        "id": "age_gate_minimum",
+        "label": "Minimum Age",
+        "default": 21
+      }
+    ]
+  },
+  {
+    "name": "Announcement Bar",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "announcement_show",
+        "label": "Show Announcement Bar",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "announcement_text_1",
+        "label": "Announcement 1",
+        "default": "Free Shipping Over $75"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text_2",
+        "label": "Announcement 2",
+        "default": "Borosilicate Glass Only"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text_3",
+        "label": "Announcement 3",
+        "default": "California Based & Tested"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text_4",
+        "label": "Announcement 4",
+        "default": "Discreet Plain Packaging Always"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text_5",
+        "label": "Announcement 5",
+        "default": "1-Year Guarantee"
+      },
+      {
+        "type": "text",
+        "id": "announcement_text_6",
+        "label": "Announcement 6",
+        "default": "Adults 21+ Only"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram Handle",
+        "default": "@flow3r.glass"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_url",
+        "label": "Instagram URL",
+        "default": "https://instagram.com/flow3r.glass"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_url",
+        "label": "TikTok URL"
+      }
+    ]
+  },
+  {
+    "name": "Cat Fam",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cat_section_enabled",
+        "label": "Show Cat Collection section on homepage",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cat_charity_text",
+        "label": "Charity copy",
+        "default": "10% of every Cat Collection purchase goes directly to a local cat shelter."
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Brand Green (primary buttons, nav)",
+        "default": "#245034"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Light Green (accent backgrounds)",
+        "default": "#e8f5ed"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Primary Text",
+        "default": "#0d0d0d"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Secondary Text",
+        "default": "#555550"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Page Background",
+        "default": "#F5F0E8"
+      },
+      {
+        "type": "color",
+        "id": "color_bg2",
+        "label": "Section Background",
+        "default": "#f6f5f2"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "min": 14,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "label": "Base Font Size",
+        "default": 16
+      }
+    ]
+  }
+]
